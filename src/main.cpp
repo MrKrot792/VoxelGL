@@ -18,8 +18,10 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     glfwSwapInterval(0); // Turn off vsync
+    
 
     // GLFW window
     GLFWwindow *window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
@@ -40,6 +42,10 @@ int main(void)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    // Antialiasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glEnable(GL_MULTISAMPLE);
 
     float vertices[] = {
         0.0f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, // top right
@@ -72,6 +78,7 @@ int main(void)
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
     glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
