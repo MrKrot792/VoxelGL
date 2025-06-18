@@ -2,6 +2,7 @@
 #include "shader.hpp"
 
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 // std
 #include <iostream>
@@ -19,7 +20,6 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     glfwSwapInterval(0); // Turn off vsync
-
 
     // GLFW window
     GLFWwindow *window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
@@ -42,15 +42,13 @@ int main(void)
     }
 
     float vertices[] = {
-        0.5f,  0.5f,  0.0f, // top right
-        0.5f,  -0.5f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, // bottom left
-        -0.5f, 0.5f,  0.0f  // top left
+        0.0f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, // top right
+        0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
     };
     unsigned int indices[] = {
         // note that we start from 0!
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+        0, 1, 2, // first triangle
     };
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
@@ -69,15 +67,19 @@ int main(void)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.use();
         float timeValue = glfwGetTime();
@@ -97,8 +99,8 @@ int main(void)
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << width << " X, " 
-              << height << " Y" << std::endl;
+    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << width
+              << " X, " << height << " Y" << std::endl;
     glViewport(0, 0, width, height);
 }
 
