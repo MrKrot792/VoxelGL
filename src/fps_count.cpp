@@ -1,8 +1,6 @@
 #include "fps_count.hpp"
 #include <GLFW/glfw3.h>
 
-#include <iostream>
-
 FPSCounter::FPSCounter(GLFWwindow *window)
 {
     this->window = window;
@@ -20,12 +18,29 @@ void FPSCounter::End()
 
 uint32_t FPSCounter::GetFPS()
 {
-    return 0;
+    if(seconds_count >= 1.0)
+    {
+        this->seconds_count = 0;
+        this->old_frame_count = this->frame_count;
+        this->frame_count = 0;
+
+        return old_frame_count;
+    }
+
+    seconds_count += GetDelta();
+    frame_count++;
+
+    return old_frame_count;
 }
 
 float FPSCounter::GetMediumFPS()
 {
-    double difference = this->end - this->start;
-
+    double difference = this->GetDelta();
     return 1.0 / difference;
+}
+
+float FPSCounter::GetDelta()
+{
+    double difference = this->end - this->start;
+    return difference;
 }
