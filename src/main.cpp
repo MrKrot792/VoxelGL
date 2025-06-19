@@ -1,7 +1,11 @@
 #include "include/glad/glad.h"
 #include "shader.hpp"
+#include "fps_count.hpp"
 
 #include <GLFW/glfw3.h>
+#include <cstdlib>
+
+// Crazy glm stuff
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/quaternion_transform.hpp>
@@ -28,13 +32,10 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    //glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
-    glfwSwapInterval(0); // Turn off vsync
-
     // Antialiasing
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_SAMPLES, 8);
 
     // GLFW window
     GLFWwindow *window = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
@@ -47,6 +48,7 @@ int main(void)
 
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1); // Turn off vsync
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // GLAD
@@ -119,8 +121,17 @@ int main(void)
     glGetIntegerv(GL_SAMPLES, &samples);
     std::cout << "Samples: " << samples << std::endl;
 
+    glm::vec3 position[] = {glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+                            glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+                            glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+                            glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+                            glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
+
+    FPSCounter fps(window);
+
     while (!glfwWindowShouldClose(window))
     {
+        fps.Start();
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -138,25 +149,33 @@ int main(void)
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -6.0f));
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(15.f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(.5f, 1.0f, 1.0f));
-
         // Sending them to GPU
         shader.setMatrix4(std::string("projection"), projection);
-        shader.setMatrix4(std::string("model"), model);
         shader.setMatrix4(std::string("view"), view);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        for (int i = 0; i < 10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, position[i]);
+            // model = glm::rotate(model, glm::radians(15.f), glm::vec3(1.0f, 0.0f, 0.0f));
+            model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(.5f, 1.0f, 1.0f));
 
-        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+            shader.setMatrix4(std::string("model"), model);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+            shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+        fps.End();
+
+        std::cout << fps.GetMediumFPS() << std::endl;
     }
 
     glfwTerminate();
