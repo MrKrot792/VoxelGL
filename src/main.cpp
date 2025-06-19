@@ -175,7 +175,7 @@ int main(void)
         glfwPollEvents();
         fps.End();
 
-        std::cout << fps.GetMediumFPS() << std::endl;
+        std::cout << fps.GetFPS() << std::endl;
     }
 
     glfwTerminate();
