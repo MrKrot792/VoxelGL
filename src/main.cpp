@@ -48,7 +48,7 @@ int main(void)
 
     glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(1); // Turn off vsync
+    glfwSwapInterval(0); // Turn off vsync
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // GLAD
