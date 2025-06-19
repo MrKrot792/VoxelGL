@@ -2,6 +2,7 @@
 
 #include "glad/glad.h"
 
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 
 // std
@@ -22,4 +23,6 @@ class Shader
     void setFloat(const std::string &name, float value) const;
 
     void setMatrix4(const std::string &name, const glm::mat4 &value) const;
+
+    void setVec3(const std::string &name, const glm::vec3 &value) const;
 };

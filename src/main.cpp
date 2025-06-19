@@ -5,6 +5,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/quaternion_transform.hpp>
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
@@ -18,13 +19,16 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
 
+int width = 800;
+int height = 600;
+
 int main(void)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    //glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
     glfwSwapInterval(0); // Turn off vsync
@@ -33,8 +37,6 @@ int main(void)
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     // GLFW window
-    int width = 800;
-    int height = 600;
     GLFWwindow *window = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
@@ -131,20 +133,25 @@ int main(void)
         // 3D stuff
         // Matrices creation
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -6.0f));
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, glm::radians(15.f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(.5f, 1.0f, 1.0f));
-
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
         // Sending them to GPU
         shader.setMatrix4(std::string("projection"), projection);
         shader.setMatrix4(std::string("model"), model);
         shader.setMatrix4(std::string("view"), view);
 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -156,11 +163,13 @@ int main(void)
     return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
 {
-    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << width
-              << " X, " << height << " Y" << std::endl;
-    glViewport(0, 0, width, height);
+    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
+              << " X, " << _height << " Y" << std::endl;
+    glViewport(0, 0, _width, _height);
+    width = _width;
+    height = _height;
 }
 
 void processInput(GLFWwindow *window)
