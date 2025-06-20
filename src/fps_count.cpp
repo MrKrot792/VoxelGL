@@ -1,11 +1,6 @@
 #include "fps_count.hpp"
 #include <GLFW/glfw3.h>
 
-FPSCounter::FPSCounter(GLFWwindow *window)
-{
-    this->window = window;
-}
-
 void FPSCounter::Start()
 {
     this->start = glfwGetTime();   
