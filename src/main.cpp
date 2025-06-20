@@ -1,6 +1,6 @@
 #include "include/glad/glad.h"
+#include "include/fps_count.hpp"
 #include "shader.hpp"
-#include "fps_count.hpp"
 
 #include <GLFW/glfw3.h>
 #include <cstdlib>
@@ -34,9 +34,6 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
-    // Antialiasing
-    glfwWindowHint(GLFW_SAMPLES, 8);
-
     // GLFW window
     GLFWwindow *window = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
@@ -58,42 +55,11 @@ int main(void)
         return -1;
     }
 
-    // float vertices[] = {
-    //     0.5f,  0.5f, 0.0f,
-    //     0.5f, -0.5f, 0.0f,
-    //    -0.5f, -0.5f, 0.0f,
-    //    -0.5f,  0.5f, 0.0f
-    // };
+    float vertices[] = {-0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f,
+                        -0.5f, -0.5f, 0.5f,  0.5f, -0.5f, 0.5f,  0.5f, 0.5f, 0.5f,  -0.5f, 0.5f, 0.5f};
 
-    float vertices[] = {
-        // x, y, z
-        -0.5f, -0.5f, -0.5f, // 0: левый нижний задний
-        0.5f,  -0.5f, -0.5f, // 1: правый нижний задний
-        0.5f,  0.5f,  -0.5f, // 2: правый верхний задний
-        -0.5f, 0.5f,  -0.5f, // 3: левый верхний задний
-        -0.5f, -0.5f, 0.5f,  // 4: левый нижний передний
-        0.5f,  -0.5f, 0.5f,  // 5: правый нижний передний
-        0.5f,  0.5f,  0.5f,  // 6: правый верхний передний
-        -0.5f, 0.5f,  0.5f   // 7: левый верхний передний
-    };
-
-    unsigned int indices[] = {// Задняя грань
-                              0, 1, 2, 2, 3, 0,
-
-                              // Передняя грань
-                              4, 5, 6, 6, 7, 4,
-
-                              // Левая грань
-                              0, 3, 7, 7, 4, 0,
-
-                              // Правая грань
-                              1, 5, 6, 6, 2, 1,
-
-                              // Нижняя грань
-                              0, 1, 5, 5, 4, 0,
-
-                              // Верхняя грань
-                              3, 2, 6, 6, 7, 3};
+    unsigned int indices[] = {0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 0, 3, 7, 7, 4, 0,
+                              1, 5, 6, 6, 2, 1, 0, 1, 5, 5, 4, 0, 3, 2, 6, 6, 7, 3};
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
@@ -143,6 +109,10 @@ int main(void)
 
         // 3D stuff
         // Matrices creation
+        glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 6.f);
+        glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 
@@ -157,7 +127,6 @@ int main(void)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position[i]);
-            // model = glm::rotate(model, glm::radians(15.f), glm::vec3(1.0f, 0.0f, 0.0f));
             model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(.5f, 1.0f, 1.0f));
 
             shader.setMatrix4(std::string("model"), model);
