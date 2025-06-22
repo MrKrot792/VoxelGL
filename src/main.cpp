@@ -6,6 +6,7 @@
 #include <cstdlib>
 
 // Crazy glm stuff
+#include <glm/detail/qualifier.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/quaternion_transform.hpp>
@@ -75,6 +76,18 @@ int main(void)
     }
 
     float vertices[] = {-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1};
+    glm::vec3 offset[16 * 16 * 16];
+
+    for (int i = 0; i < 16; i++)
+    {
+        for (int j = 0; j < 16; j++)
+        {
+            for (int k = 0; k < 16; k++)
+            {
+                offset[i + j * 16 + k * 16 * 16] = glm::vec3(i, j, k);
+            }
+        }
+    }
 
     unsigned int indices[] = {3, 1, 0, 2, 1, 3, 2, 5, 1, 6, 5, 2, 6, 4, 5, 7, 4, 6,
                               7, 0, 4, 3, 0, 7, 7, 2, 3, 6, 2, 7, 0, 5, 4, 1, 5, 0};
@@ -98,6 +111,15 @@ int main(void)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
+    GLuint offsetVBO;
+    glGenBuffers(1, &offsetVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, offsetVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(offset), offset, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribDivisor(1, 1);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
@@ -107,12 +129,6 @@ int main(void)
     int samples;
     glGetIntegerv(GL_SAMPLES, &samples);
     std::cout << "Samples: " << samples << std::endl;
-
-    glm::vec3 position[] = {glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
-                            glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
-                            glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
-                            glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
-                            glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
     FPSCounter fps;
 
@@ -146,22 +162,17 @@ int main(void)
         shader.setMatrix4(std::string("projection"), projection);
         shader.setMatrix4(std::string("view"), view);
 
-        for (int i = 0; i < 10; i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, position[i]);
-            model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(.5f, 1.0f, 1.0f));
+        glm::mat4 model = glm::mat4(1.0f);
 
-            shader.setMatrix4(std::string("model"), model);
+        shader.setMatrix4(std::string("model"), model);
 
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16*16*16);
 
-            shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-        }
+        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16*16*16);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -260,6 +271,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     yoffset *= sensitivity;
     yaw += xoffset;
     pitch += yoffset;
+
     glm::vec3 direction;
 
     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -268,6 +280,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 
     cameraFront = glm::normalize(direction);
 }
+
 void printMatrix(glm::mat4 matrix)
 {
     for (int i = 0; i < 4; i++)
