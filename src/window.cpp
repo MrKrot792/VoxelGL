@@ -1,0 +1,68 @@
+#include "window.hpp"
+#include <GLFW/glfw3.h>
+
+// std
+#include <cstdio>
+#include <iostream>
+
+uint32_t Window::vsync = 0;
+uint32_t Window::antialiasingLevel = 0;
+uint32_t Window::width = 800;
+uint32_t Window::height = 600;
+GLFWwindow *Window::window = nullptr;
+
+int Window::Init()
+{
+    Window::vsync = 0;
+    Window::antialiasingLevel = 4;
+
+    Window::width = 800;
+    Window::height = 600;
+
+    glfwInit();
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+
+    glfwWindowHint(GLFW_SAMPLES, Window::antialiasingLevel);
+
+    Window::window = glfwCreateWindow(Window::width, Window::height, "Learn OpenGL", NULL, NULL);
+    if (Window::window == NULL)
+    {
+        glfwTerminate();
+        throw std::runtime_error("Failed to create window!");
+        std::cerr << "Failed to create window!" << std::endl;
+    }
+
+    glfwMakeContextCurrent(Window::window);
+
+    glfwSwapInterval(Window::vsync);
+    glfwSetFramebufferSizeCallback(Window::window, Window::framebuffer_size_callback);
+    glfwSetCursorPosCallback(Window::window, Window::mouse_callback);
+    glfwSetInputMode(Window::window, GLFW_CURSOR,
+                     GLFW_CURSOR_DISABLED); // TODO: Remove this line, and move it to the class
+
+    return 0;
+}
+
+int Window::windowShouldClose()
+{
+    int result = glfwWindowShouldClose(Window::window);
+    return result;
+}
+
+void Window::windowHint(int hint, int value)
+{
+    glfwWindowHint(hint, value);
+}
+
+void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
+{
+    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
+              << " X, " << _height << " Y" << std::endl;
+    glViewport(0, 0, _width, _height);
+    Window::width = _width;
+    Window::height = _height;
+}

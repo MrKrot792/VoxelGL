@@ -3,7 +3,8 @@
 #include "shader.hpp"
 
 #include <GLFW/glfw3.h>
-#include <cstdlib>
+
+#include "window.hpp"
 
 // Crazy glm stuff
 #include <glm/detail/qualifier.hpp>
@@ -13,6 +14,7 @@
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
 
@@ -21,8 +23,6 @@
 #include <ostream>
 #include <string>
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
 
@@ -35,38 +35,15 @@ glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 6.f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-float yaw = -90.f;
-float pitch = 0;
+float yaw = 0, pitch = 0;
+bool firstMouse = true;
 
 double deltaTime = 0;
-
-bool firstMouse = true;
+double timePassed = 0;
 
 int main(void)
 {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // GLFW window
-    GLFWwindow *window = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(0); // Turn off vsync
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    Window::Init();
 
     // GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -132,10 +109,10 @@ int main(void)
 
     FPSCounter fps;
 
-    while (!glfwWindowShouldClose(window))
+    while (!Window::windowShouldClose())
     {
         fps.Start();
-        processInput(window);
+        processInput(Window::window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -168,31 +145,23 @@ int main(void)
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16*16*16);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16 * 16 * 16);
 
         shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16*16*16);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16 * 16 * 16);
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(Window::window);
         glfwPollEvents();
         fps.End();
 
-        std::cout << fps.GetFPS() << std::endl;
         deltaTime = fps.GetDelta();
+
+        std::cout << fps.GetFPS() << std::endl;
     }
 
     glfwTerminate();
     return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
-{
-    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
-              << " X, " << _height << " Y" << std::endl;
-    glViewport(0, 0, _width, _height);
-    width = _width;
-    height = _height;
 }
 
 void processInput(GLFWwindow *window)
@@ -253,7 +222,7 @@ void processInput(GLFWwindow *window)
         yaw += cameraSpeed * 15;
 }
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos)
+void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
     if (firstMouse)
     {
@@ -271,13 +240,14 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     yoffset *= sensitivity;
     yaw += xoffset;
     pitch += yoffset;
-
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
     glm::vec3 direction;
-
     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
     cameraFront = glm::normalize(direction);
 }
 
