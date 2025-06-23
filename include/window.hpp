@@ -23,5 +23,11 @@ class Window
 
     static glm::vec2 getDimensions();
 
+    static void swapBuffers();
+    static void pollEvents();
+    static void terminate();
+
+    static int getKey(int key);
+
     Window() = delete;
 };

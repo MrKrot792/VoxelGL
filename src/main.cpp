@@ -155,8 +155,8 @@ int main(void)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, size * size * size);
 
-        glfwSwapBuffers(Window::window);
-        glfwPollEvents();
+        Window::swapBuffers();
+        Window::pollEvents();
         fps.End();
 
         deltaTime = fps.GetDelta();
@@ -164,18 +164,18 @@ int main(void)
         std::cout << fps.GetFPS() << std::endl;
     }
 
-    glfwTerminate();
+    Window::terminate();
     return 0;
 }
 
 void processInput(GLFWwindow *window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
     }
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_SPACE) == GLFW_PRESS)
     {
         GLenum errorCode = glGetError();
 
@@ -207,23 +207,23 @@ void processInput(GLFWwindow *window)
     }
 
     float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+
+    if(Window::getKey(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+        cameraSpeed = 5.f * deltaTime;
+    }
+
+    if (Window::getKey(GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
 
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_S) == GLFW_PRESS)
         cameraPos -= cameraSpeed * cameraFront;
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_A) == GLFW_PRESS)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        yaw -= cameraSpeed * 15;
-
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        yaw += cameraSpeed * 15;
 }
 
 void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)

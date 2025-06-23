@@ -76,3 +76,23 @@ glm::vec2 Window::getDimensions()
     glm::vec2 result = glm::vec2(Window::width, Window::height);
     return result;
 }
+
+void Window::swapBuffers()
+{
+    glfwSwapBuffers(Window::window);
+}
+
+void Window::pollEvents()
+{
+    glfwPollEvents();
+}
+
+void Window::terminate()
+{
+    glfwTerminate();
+}
+
+int Window::getKey(int key)
+{
+    return glfwGetKey(Window::window, key);
+}
