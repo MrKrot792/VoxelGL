@@ -1,6 +1,8 @@
 #include "window.hpp"
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
 // std
 #include <cstdio>
 #include <iostream>
@@ -63,6 +65,14 @@ void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _heig
     std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
               << " X, " << _height << " Y" << std::endl;
     glViewport(0, 0, _width, _height);
+
     Window::width = _width;
     Window::height = _height;
+}
+
+
+glm::vec2 Window::getDimensions()
+{
+    glm::vec2 result = glm::vec2(Window::width, Window::height);
+    return result;
 }

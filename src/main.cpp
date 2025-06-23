@@ -22,6 +22,7 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <vector>
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
@@ -52,21 +53,24 @@ int main(void)
         return -1;
     }
 
-    float vertices[] = {-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1};
-    glm::vec3 offset[16 * 16 * 16];
+    int size = 16;
 
-    for (int i = 0; i < 16; i++)
+    float vertices[] = {-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1};
+    std::vector<glm::vec3> offset;
+    // offset.reserve(size * size * size);
+
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < 16; j++)
+        for (int j = 0; j < size; j++)
         {
-            for (int k = 0; k < 16; k++)
+            for (int k = 0; k < size; k++)
             {
-                offset[i + j * 16 + k * 16 * 16] = glm::vec3(i, j, k);
+                offset.push_back(glm::vec3(i, j, k));
             }
         }
     }
 
-    unsigned int indices[] = {3, 1, 0, 2, 1, 3, 2, 5, 1, 6, 5, 2, 6, 4, 5, 7, 4, 6,
+    std::vector<unsigned int> indices = {3, 1, 0, 2, 1, 3, 2, 5, 1, 6, 5, 2, 6, 4, 5, 7, 4, 6,
                               7, 0, 4, 3, 0, 7, 7, 2, 3, 6, 2, 7, 0, 5, 4, 1, 5, 0};
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
@@ -83,7 +87,7 @@ int main(void)
     unsigned int EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
@@ -91,7 +95,7 @@ int main(void)
     GLuint offsetVBO;
     glGenBuffers(1, &offsetVBO);
     glBindBuffer(GL_ARRAY_BUFFER, offsetVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(offset), offset, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, offset.size() * sizeof(glm::vec3), offset.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
     glEnableVertexAttribArray(1);
@@ -99,9 +103,9 @@ int main(void)
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
-    glCullFace(GL_BACK);
+    //glCullFace(GL_BACK);
 
     int samples;
     glGetIntegerv(GL_SAMPLES, &samples);
@@ -123,14 +127,14 @@ int main(void)
 
         // 3D stuff
         // Matrices creation
-
         glm::vec3 direction;
         direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
         direction.y = sin(glm::radians(pitch));
         direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.1f, 100.0f);
+        glm::vec2 dimensions = Window::getDimensions();
+        projection = glm::perspective(glm::radians(90.0f), dimensions.x / dimensions.y, 0.1f, 1000.f);
 
         glm::mat4 view;
         view = glm::lookAt(cameraPos, cameraPos + glm::normalize(direction), cameraUp);
@@ -145,11 +149,11 @@ int main(void)
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16 * 16 * 16);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, size * size * size);
 
         shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 16 * 16 * 16);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, size * size * size);
 
         glfwSwapBuffers(Window::window);
         glfwPollEvents();

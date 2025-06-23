@@ -21,5 +21,7 @@ class Window
     static void framebuffer_size_callback(GLFWwindow *window, int _width, int _height);
     static void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 
+    static glm::vec2 getDimensions();
+
     Window() = delete;
 };
