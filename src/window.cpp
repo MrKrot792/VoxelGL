@@ -6,12 +6,7 @@
 // std
 #include <cstdio>
 #include <iostream>
-
-uint32_t Window::vsync = 0;
-uint32_t Window::antialiasingLevel = 0;
-uint32_t Window::width = 800;
-uint32_t Window::height = 600;
-GLFWwindow *Window::window = nullptr;
+#include <sys/types.h>
 
 int Window::Init()
 {
@@ -69,7 +64,6 @@ void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _heig
     Window::width = _width;
     Window::height = _height;
 }
-
 
 glm::vec2 Window::getDimensions()
 {

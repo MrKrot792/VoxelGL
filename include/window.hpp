@@ -4,32 +4,31 @@
 #include <glm/fwd.hpp>
 #include <sys/types.h>
 
-class Window
+namespace Window
 {
-  private:
-    static uint vsync; // Turned off
-    static uint antialiasingLevel;
 
-    static uint width;
-    static uint height;
+inline uint vsync = 0; // Turned off
+inline uint antialiasingLevel = 4;
 
-  public:
-    static GLFWwindow *window;
-    static int Init();
+inline uint width = 800;
+inline uint height = 600;
 
-    static int windowShouldClose();
-    static void windowHint(int hint, int value);
+inline GLFWwindow *window;
 
-    static void framebuffer_size_callback(GLFWwindow *window, int _width, int _height);
-    static void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+int Init();
 
-    static glm::vec2 getDimensions();
+int windowShouldClose();
+void windowHint(int hint, int value);
 
-    static void swapBuffers();
-    static void pollEvents();
-    static void terminate();
+void framebuffer_size_callback(GLFWwindow *window, int _width, int _height);
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 
-    static int getKey(int key);
+glm::vec2 getDimensions();
 
-    Window() = delete;
-};
+void swapBuffers();
+void pollEvents();
+void terminate();
+
+int getKey(int key);
+
+}; // namespace Window
