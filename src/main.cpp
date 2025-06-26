@@ -1,10 +1,9 @@
 #include "include/fps_count.hpp"
 #include "include/glad/glad.h"
 #include "shader.hpp"
+#include "window.hpp"
 
 #include <GLFW/glfw3.h>
-
-#include "window.hpp"
 
 // Crazy glm stuff
 #include <glm/detail/qualifier.hpp>
