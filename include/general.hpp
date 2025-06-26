@@ -1,0 +1,3 @@
+#define CODE_ERROR 1
+#define CODE_NO_ERROR 0
+#define CODE_FATAL_ERROR -1
