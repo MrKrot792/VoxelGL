@@ -2,6 +2,7 @@
 #include "include/glad/glad.h"
 #include "shader.hpp"
 #include "window.hpp"
+#include "chunk.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -39,7 +40,8 @@ float yaw = 0, pitch = 0;
 bool firstMouse = true;
 
 double deltaTime = 0;
-double timePassed = 0;
+
+int FPS = 0;
 
 int main(void)
 {
@@ -121,7 +123,6 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glBindVertexArray(VAO);
-
         shader.use();
 
         // 3D stuff
@@ -157,10 +158,12 @@ int main(void)
         Window::swapBuffers();
         Window::pollEvents();
         fps.End();
-
         deltaTime = fps.GetDelta();
 
-        std::cout << fps.GetFPS() << std::endl;
+        if(fps.GetFPS() != FPS)
+            std::cout << fps.GetFPS() << std::endl;
+
+        FPS = fps.GetFPS();
     }
 
     Window::terminate();
