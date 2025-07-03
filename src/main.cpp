@@ -1,8 +1,8 @@
+#include "chunk.hpp"
 #include "include/fps_count.hpp"
 #include "include/glad/glad.h"
 #include "shader.hpp"
 #include "window.hpp"
-#include "chunk.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -41,7 +41,7 @@ bool firstMouse = true;
 
 double deltaTime = 0;
 
-int FPS = 0;
+unsigned int FPS = 0;
 
 int main(void)
 {
@@ -54,27 +54,22 @@ int main(void)
         return -1;
     }
 
-    int size = 16;
-
     float vertices[] = {-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1};
     std::vector<glm::vec3> offset;
-    // offset.reserve(size * size * size);
-
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            for (int k = 0; k < size; k++)
-            {
-                offset.push_back(glm::vec3(i, j, k));
-            }
-        }
-    }
 
     std::vector<unsigned int> indices = {3, 1, 0, 2, 1, 3, 2, 5, 1, 6, 5, 2, 6, 4, 5, 7, 4, 6,
-                              7, 0, 4, 3, 0, 7, 7, 2, 3, 6, 2, 7, 0, 5, 4, 1, 5, 0};
+                                         7, 0, 4, 3, 0, 7, 7, 2, 3, 6, 2, 7, 0, 5, 4, 1, 5, 0};
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
+
+    Chunk a;
+
+    auto renderData = a.getRenderData();
+
+    for (auto i : renderData)
+    {
+        offset.push_back(i.first);
+    }
 
     GLuint VBO;
     glGenBuffers(1, &VBO);
@@ -107,10 +102,6 @@ int main(void)
     glEnable(GL_CULL_FACE);
 
     glCullFace(GL_BACK);
-
-    int samples;
-    glGetIntegerv(GL_SAMPLES, &samples);
-    std::cout << "Samples: " << samples << std::endl;
 
     FPSCounter fps;
 
@@ -149,18 +140,18 @@ int main(void)
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, size * size * size);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, offset.size());
 
         shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, size * size * size);
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, offset.size());
 
         Window::swapBuffers();
         Window::pollEvents();
         fps.End();
         deltaTime = fps.GetDelta();
 
-        if(fps.GetFPS() != FPS)
+        if (fps.GetFPS() != FPS)
             std::cout << fps.GetFPS() << std::endl;
 
         FPS = fps.GetFPS();
@@ -210,7 +201,7 @@ void processInput(GLFWwindow *window)
 
     float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
 
-    if(Window::getKey(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
         cameraSpeed = 5.f * deltaTime;
     }
@@ -255,17 +246,4 @@ void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
-}
-
-void printMatrix(glm::mat4 matrix)
-{
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            std::cout << matrix[j][i] << " ";
-        }
-
-        std::cout << std::endl;
-    }
 }
