@@ -72,36 +72,33 @@ int Chunk::genRenderData()
         {
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
-                auto position = glm::vec3(k, j, i);
+                glm::vec3 position(k, j, i);
                 BLOCK thisBlock = this->getBlockAtR(position);
-
-                // Surrounding blocks
-                BLOCK xBlock[2] = {this->getBlockAtR(glm::vec3(k + 1, j, i)),
-                                   this->getBlockAtR(glm::vec3(k - 1, j, i))};
-                BLOCK yBlock[2] = {this->getBlockAtR(glm::vec3(k, j + 1, i)),
-                                   this->getBlockAtR(glm::vec3(k, j - 1, i))};
-                BLOCK zBlock[2] = {this->getBlockAtR(glm::vec3(k, j, i + 1)),
-                                   this->getBlockAtR(glm::vec3(k, j, i - 1))};
-
-                if (xBlock[0] != AIR and xBlock[1] != AIR)
-                {
-                    if (yBlock[0] != AIR and yBlock[1] != AIR)
-                    {
-                        if (zBlock[0] != AIR and zBlock[1] != AIR)
-                        {
-                            std::cout << "Avoiding block at ";
-                            printVector(position);
-                            std::cout << std::endl;
-                        }
-                    }
-                }
 
                 if (thisBlock == AIR)
                     continue;
 
-                std::pair<glm::vec3, BLOCK> pair = std::pair(glm::vec3(k, j, i), thisBlock);
+                BLOCK xBlock[2] = {
+                    (k + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k + 1, j, i)) : AIR),
+                    (k - 1 >= 0 ? this->getBlockAtR(glm::vec3(k - 1, j, i)) : AIR)
+                };
+                BLOCK yBlock[2] = {
+                    (j + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j + 1, i)) : AIR),
+                    (j - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j - 1, i)) : AIR)
+                };
+                BLOCK zBlock[2] = {
+                    (i + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j, i + 1)) : AIR),
+                    (i - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j, i - 1)) : AIR)
+                };
 
-                this->renderData.push_back(pair);
+                if (xBlock[0] != AIR && xBlock[1] != AIR &&
+                    yBlock[0] != AIR && yBlock[1] != AIR &&
+                    zBlock[0] != AIR && zBlock[1] != AIR)
+                {
+                    continue;
+                }
+
+                this->renderData.emplace_back(position, thisBlock);
             }
         }
     }
