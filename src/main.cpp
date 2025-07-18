@@ -134,10 +134,6 @@ int main(void)
         shader.setMatrix4(std::string("projection"), projection);
         shader.setMatrix4(std::string("view"), view);
 
-        glm::mat4 model = glm::mat4(1.0f);
-
-        shader.setMatrix4(std::string("model"), model);
-
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
         glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, offset.size());
