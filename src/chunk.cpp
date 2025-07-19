@@ -67,8 +67,7 @@ RESULT_CODE Chunk::genRenderData()
                 }
 
                 // I know this is very highly unoptimized shit, please don't execute me
-
-                if (xBlock[0] != AIR)
+                if (xBlock[1] == AIR)
                 {
                     for (size_t i = 0; i < Directions::RIGHT.size() / 3; i++)
                     {
@@ -78,7 +77,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (xBlock[1] != AIR)
+                if (xBlock[0] == AIR)
                 {
                     for (size_t i = 0; i < Directions::LEFT.size() / 3; i++)
                     {
@@ -88,7 +87,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (yBlock[0] != AIR)
+                if (yBlock[1] == AIR)
                 {
                     for (size_t i = 0; i < Directions::DOWN.size() / 3; i++)
                     {
@@ -98,7 +97,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (yBlock[1] != AIR)
+                if (yBlock[0] == AIR)
                 {
                     for (size_t i = 0; i < Directions::UP.size() / 3; i++)
                     {
@@ -108,7 +107,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (zBlock[0] != AIR)
+                if (zBlock[1] == AIR)
                 {
                     for (size_t i = 0; i < Directions::FRONT.size() / 3; i++)
                     {
@@ -118,7 +117,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (zBlock[1] != AIR)
+                if (zBlock[0] == AIR)
                 {
                     for (size_t i = 0; i < Directions::BACK.size() / 3; i++)
                     {

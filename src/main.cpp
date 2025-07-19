@@ -128,12 +128,6 @@ int main(void)
 
         FPS = fps.GetFPS();
     }
-        std::cout << "[INFO] | Size: " << renderData.size() << std::endl;
-
-    for(size_t i = 0; i < renderData.size(); i++)
-    {
-        std::cout << std::to_string(renderData.at(i)) << " ";
-    }
 
     Window::terminate();
     return 0;
