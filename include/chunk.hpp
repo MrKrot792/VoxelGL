@@ -18,7 +18,7 @@ enum BLOCK
 };
 
 typedef std::pair<glm::vec3, BLOCK> BlockData;
-typedef std::vector<BlockData> RenderData;
+typedef std::vector<char> RenderData;
 
 class Chunk
 {

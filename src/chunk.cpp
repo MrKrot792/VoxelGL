@@ -65,7 +65,37 @@ RESULT_CODE Chunk::genRenderData()
                     continue;
                 }
 
-                this->renderData.emplace_back(position, thisBlock);
+                // I know this is very highly unoptimized shit, please don't execute me 
+
+                if (xBlock[0] != AIR)
+                {
+                    this->renderData.insert(this->renderData.end(), Directions::RIGHT.begin(), Directions::RIGHT.end());
+                }
+
+                if (xBlock[1] != AIR)
+                {
+                    this->renderData.insert(this->renderData.end(), Directions::LEFT.begin(), Directions::LEFT.end());
+                }
+
+                if (yBlock[0] != AIR)
+                {
+                    this->renderData.insert(this->renderData.end(), Directions::UP.begin(), Directions::UP.end());
+                }
+
+                if (yBlock[1] != AIR)
+                {
+                    this->renderData.insert(this->renderData.end(), Directions::DOWN.begin(), Directions::DOWN.end());
+                }
+
+                if (zBlock[0] != AIR)
+                {
+                    this->renderData.insert(this->renderData.end(), Directions::BACK.begin(), Directions::BACK.end());
+                }
+
+                if (zBlock[1] != AIR)
+                {
+                    this->renderData.insert(this->renderData.end(), Directions::FRONT.begin(), Directions::FRONT.end());
+                }
             }
         }
     }
