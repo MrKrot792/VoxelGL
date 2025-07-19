@@ -223,17 +223,7 @@ BLOCK Chunk::genBlockAt(int x, int y, int z)
     {
         result = DIRT;
     }
-
-    if (x < 10)
-    {
-        result = DIRT;
-    }
-
-    if (z < 10)
-    {
-        result = DIRT;
-    }
-
+    
     return result;
 }
 

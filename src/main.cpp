@@ -22,6 +22,7 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <vector>
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
@@ -55,8 +56,18 @@ int main(void)
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    Chunk chunk1{{16, 0, 0}};
-    Chunk chunk2{{0, 16, 0}};
+    std::vector<Chunk> chunks;
+
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            int x = i - 4;
+            int z = j - 4;
+
+            chunks.push_back(Chunk(glm::vec3(x * 16, 0, z * 16)));
+        }
+    }
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -102,21 +113,17 @@ int main(void)
         shader.setMatrix4(std::string("view"), view);
 
         // FIX LATER: Idk what makes VAO bind VBO
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        chunk1.draw();
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
-        chunk1.draw();
+        for (auto i : chunks)
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
+            i.draw();
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        chunk2.draw();
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
-        chunk2.draw();
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
+            i.draw();
+        }
 
         Window::swapBuffers();
         Window::pollEvents();
