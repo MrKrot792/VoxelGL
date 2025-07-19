@@ -102,9 +102,6 @@ int main(void)
         shader.setMatrix4(std::string("view"), view);
 
         // FIX LATER: Idk what makes VAO bind VBO
-        glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
-        glEnableVertexAttribArray(0);
-        glBindVertexArray(VAO);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
         chunk1.draw();
@@ -113,9 +110,6 @@ int main(void)
         shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
         chunk1.draw();
 
-        glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
-        glEnableVertexAttribArray(0);
-        glBindVertexArray(VAO);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
         chunk2.draw();

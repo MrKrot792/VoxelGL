@@ -239,12 +239,8 @@ BLOCK Chunk::genBlockAt(int x, int y, int z)
 
 RESULT_CODE Chunk::draw()
 {
-    std::cout << "[DEBUG] | Drawn chunk at: ";
-    printVector(this->position);
-    std::cout << "\n";
-
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
     glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
     glDrawArrays(GL_TRIANGLES, 0, renderData.size());
 
