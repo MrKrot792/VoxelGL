@@ -62,10 +62,14 @@ int main(void)
     {
         for (int j = 0; j < 8; j++)
         {
-            int x = i - 4;
-            int z = j - 4;
+            for (int k = 0; k < 8; k++)
+            {
+                int x = i - 4;
+                int y = k - 4;
+                int z = j - 4;
 
-            chunks.push_back(Chunk(glm::vec3(x * 16, 0, z * 16)));
+                chunks.push_back(Chunk(glm::vec3(x * 16, y * 16, z * 16)));
+            }
         }
     }
 
