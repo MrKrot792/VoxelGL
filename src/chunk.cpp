@@ -7,10 +7,10 @@
 
 Chunk::Chunk()
 {
-    // Placehorder for a generator
-
     srand(time(0));
+
     this->genData();
+
     this->chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
 }
 
@@ -126,6 +126,11 @@ BLOCK Chunk::genBlockAt(int x, int y, int z)
     }
 
     if (x < 10)
+    {
+        result = DIRT;
+    }
+
+    if (z < 10)
     {
         result = DIRT;
     }
