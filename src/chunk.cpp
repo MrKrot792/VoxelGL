@@ -2,6 +2,7 @@
 #include "general.hpp"
 #include "shader.hpp"
 
+#include <cmath>
 #include <cstddef>
 #include <cstdlib>
 #include <glm/fwd.hpp>
@@ -221,7 +222,7 @@ BLOCK Chunk::genBlockAt(glm::vec3 pos)
     BLOCK result = AIR;
 
     // Procedural generation (kinda)
-    if(pos.y < sin(pos.x / 8) * 8 + 10)
+    if(pos.y < sin(pos.x / 8 * M_PI) * 8 + 10)
         result = DIRT;
 
     return result;
