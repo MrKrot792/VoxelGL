@@ -68,7 +68,7 @@ int main(void)
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, renderData.size(), renderData.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, renderData.size(), renderData.data(), GL_DYNAMIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
     glEnableVertexAttribArray(0);
@@ -171,13 +171,13 @@ void processInput(GLFWwindow *window)
         std::cout << "[INFO] | Error: " << error << std::endl;
     }
 
-    float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+    float cameraSpeed = 5.f * deltaTime; // adjust accordingly
     glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
     glm::vec3 cameraRealUp = glm::normalize(glm::cross(cameraFront, cameraRight));
 
     if (Window::getKey(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        cameraSpeed = 5.f * deltaTime;
+        cameraSpeed = 15.f * deltaTime;
     }
 
     if (Window::getKey(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)

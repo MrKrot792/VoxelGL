@@ -49,6 +49,7 @@ RESULT_CODE Chunk::genRenderData()
             {
                 glm::vec3 position(k, j, i);
                 BLOCK thisBlock = this->getBlockAtR(position);
+                position += this->position;
 
                 if (thisBlock == AIR)
                     continue;
