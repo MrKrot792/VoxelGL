@@ -31,7 +31,7 @@ class Chunk
     RESULT_CODE genRenderData();
 
     RESULT_CODE genData();
-    BLOCK genBlockAt(int x, int y, int z);
+    BLOCK genBlockAt(glm::vec3 pos);
 
     GLuint VBO;
 

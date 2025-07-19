@@ -207,7 +207,8 @@ RESULT_CODE Chunk::genData()
         {
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
-                this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] = this->genBlockAt(i, j, k);
+                this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] =
+                    this->genBlockAt(glm::vec3(k, j, i) + this->position);
             }
         }
     }
@@ -215,15 +216,14 @@ RESULT_CODE Chunk::genData()
     return RESULT_CODE::CODE_NO_ERROR;
 }
 
-BLOCK Chunk::genBlockAt(int x, int y, int z)
+BLOCK Chunk::genBlockAt(glm::vec3 pos)
 {
     BLOCK result = AIR;
 
-    if (y < 10)
-    {
+    // Procedural generation (kinda)
+    if(pos.y < sin(pos.x / 8) * 8 + 10)
         result = DIRT;
-    }
-    
+
     return result;
 }
 
