@@ -50,7 +50,7 @@ int main(void)
     // GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cout << "[ERROR] | Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
@@ -148,7 +148,7 @@ int main(void)
         deltaTime = fps.GetDelta();
 
         if (fps.GetFPS() != FPS)
-            std::cout << fps.GetFPS() << std::endl;
+            std::cout << "[INFO] | FPS: " << fps.GetFPS() << std::endl;
 
         FPS = fps.GetFPS();
     }
@@ -164,7 +164,7 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
     }
 
-    if (Window::getKey(GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (Window::getKey(GLFW_KEY_H) == GLFW_PRESS)
     {
         GLenum errorCode = glGetError();
 
@@ -192,14 +192,26 @@ void processInput(GLFWwindow *window)
             break;
         }
 
-        std::cout << error << std::endl;
+        std::cout << "[INFO] | Error: " << error << std::endl;
     }
 
     float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+    glm::vec3 cameraRealUp = glm::normalize(glm::cross(cameraFront, cameraRight));
+
+    if (Window::getKey(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    {
+        cameraSpeed = 5.f * deltaTime;
+    }
 
     if (Window::getKey(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        cameraSpeed = 5.f * deltaTime;
+        cameraPos -= cameraSpeed * -cameraRealUp;
+    }
+
+    if (Window::getKey(GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        cameraPos -= cameraSpeed * cameraRealUp;
     }
 
     if (Window::getKey(GLFW_KEY_W) == GLFW_PRESS)
@@ -209,10 +221,10 @@ void processInput(GLFWwindow *window)
         cameraPos -= cameraSpeed * cameraFront;
 
     if (Window::getKey(GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos -= cameraRight * cameraSpeed;
 
     if (Window::getKey(GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos -= -cameraRight * cameraSpeed;
 }
 
 void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
@@ -226,20 +238,27 @@ void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
 
     float xoffset = xpos - lastX;
     float yoffset = lastY - ypos;
+
     lastX = xpos;
     lastY = ypos;
+
     float sensitivity = 0.1f;
+
     xoffset *= sensitivity;
     yoffset *= sensitivity;
+
     yaw += xoffset;
     pitch += yoffset;
+
     if (pitch > 89.0f)
         pitch = 89.0f;
     if (pitch < -89.0f)
         pitch = -89.0f;
+
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
     cameraFront = glm::normalize(direction);
 }

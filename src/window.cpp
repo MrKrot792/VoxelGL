@@ -57,7 +57,7 @@ void Window::windowHint(int hint, int value)
 
 void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
 {
-    std::cout << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
+    std::cout << "[INFO] | " << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
               << " X, " << _height << " Y" << std::endl;
     glViewport(0, 0, _width, _height);
 

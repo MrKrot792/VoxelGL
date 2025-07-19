@@ -24,5 +24,5 @@ const std::vector<int> DOWN = {
 
 void printVector(glm::vec3 vec)
 {
-    std::cout << "X: " << vec.x << ", Y: " << vec.y << ", Z:" << vec.z;
+    std::cout << "[INFO] | " << "X: " << vec.x << ", Y: " << vec.y << ", Z:" << vec.z;
 }
