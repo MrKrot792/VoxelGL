@@ -57,18 +57,11 @@ int main(void)
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    Chunk chunk;
-
-    auto renderData = chunk.getRenderData();
+    Chunk chunk; // Also generates VBO
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, renderData.size(), renderData.data(), GL_DYNAMIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
     glEnableVertexAttribArray(0);
@@ -89,7 +82,6 @@ int main(void)
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glBindVertexArray(VAO);
         shader.use();
 
         // 3D stuff
@@ -112,11 +104,11 @@ int main(void)
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        glDrawArrays(GL_TRIANGLES, 0, renderData.size());
+        chunk.draw();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
-        glDrawArrays(GL_TRIANGLES, 0, renderData.size());
+        chunk.draw();
 
         Window::swapBuffers();
         Window::pollEvents();

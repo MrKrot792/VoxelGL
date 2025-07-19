@@ -12,7 +12,11 @@ Chunk::Chunk()
 
     this->genData();
 
-    this->chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
+    this->genRenderData();
+
+    glGenBuffers(1, &this->VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
 }
 
 RESULT_CODE Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
@@ -201,4 +205,12 @@ BLOCK Chunk::genBlockAt(int x, int y, int z)
     }
 
     return result;
+}
+
+RESULT_CODE Chunk::draw()
+{
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDrawArrays(GL_TRIANGLES, 0, renderData.size());
+
+    return RESULT_CODE::CODE_NO_ERROR;
 }

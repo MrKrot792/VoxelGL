@@ -28,12 +28,12 @@ class Chunk
 
     glm::vec3 position; // Chunk position in the world divided by CHUNK_SIZE
 
-    Shader chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
-
     RESULT_CODE genRenderData();
 
     RESULT_CODE genData();
     BLOCK genBlockAt(int x, int y, int z);
+
+    GLuint VBO;
 
   public:
     Chunk();
@@ -45,4 +45,6 @@ class Chunk
     BLOCK getBlockAtNR(glm::vec3 pos); // Position is NOT relative to chunk
 
     RenderData getRenderData();
+
+    RESULT_CODE draw();
 };
