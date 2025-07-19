@@ -5,6 +5,8 @@
 #include <utility>
 #include <vector>
 
+#include "general.hpp"
+
 #define CHUNK_SIZE 16
 
 enum BLOCK
@@ -28,15 +30,15 @@ class Chunk
 
     Shader chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    int genRenderData();
+    RESULT_CODE genRenderData();
 
-    int genData();
+    RESULT_CODE genData();
     BLOCK genBlockAt(int x, int y, int z);
 
   public:
     Chunk();
 
-    int setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE]);
+    RESULT_CODE setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE]);
     BLOCK *getData();
 
     BLOCK getBlockAtR(glm::vec3 pos); // Position is relative to chunk

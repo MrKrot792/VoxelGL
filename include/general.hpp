@@ -3,9 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#define CODE_ERROR 1
-#define CODE_NO_ERROR 0
-#define CODE_FATAL_ERROR -1
+enum class RESULT_CODE {CODE_NO_ERROR, CODE_ERROR, CODE_FATAL_ERROR};
 
 const std::vector<int> FRONT = {-1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1};
 const std::vector<int> LEFT = {

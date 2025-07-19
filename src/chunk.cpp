@@ -14,7 +14,7 @@ Chunk::Chunk()
     this->chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
 }
 
-int Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
+RESULT_CODE Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
 {
     for (int i = 0; i < CHUNK_SIZE; i++)
     {
@@ -28,7 +28,7 @@ int Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
         }
     }
 
-    return CODE_NO_ERROR;
+    return RESULT_CODE::CODE_NO_ERROR;
 }
 
 BLOCK *Chunk::getData()
@@ -36,7 +36,7 @@ BLOCK *Chunk::getData()
     return this->data;
 }
 
-int Chunk::genRenderData()
+RESULT_CODE Chunk::genRenderData()
 {
     this->renderData.clear();
 
@@ -70,7 +70,7 @@ int Chunk::genRenderData()
         }
     }
 
-    return CODE_NO_ERROR;
+    return RESULT_CODE::CODE_NO_ERROR;
 }
 
 RenderData Chunk::getRenderData()
@@ -100,7 +100,7 @@ BLOCK Chunk::getBlockAtNR(glm::vec3 pos)
     return NO_BLOCK;
 }
 
-int Chunk::genData()
+RESULT_CODE Chunk::genData()
 {
     for (int i = 0; i < CHUNK_SIZE; i++)
     {
@@ -113,7 +113,7 @@ int Chunk::genData()
         }
     }
 
-    return CODE_NO_ERROR;
+    return RESULT_CODE::CODE_NO_ERROR;
 }
 
 BLOCK Chunk::genBlockAt(int x, int y, int z)
