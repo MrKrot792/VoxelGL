@@ -5,38 +5,12 @@
 #include <cstdlib>
 #include <glm/fwd.hpp>
 
-// std
-#include <iostream>
-#include <utility>
-
 Chunk::Chunk()
 {
     // Placehorder for a generator
 
     srand(time(0));
-
-    for (int i = 0; i < CHUNK_SIZE; i++)
-    {
-        for (int j = 0; j < CHUNK_SIZE; j++)
-        {
-            for (int k = 0; k < CHUNK_SIZE; k++)
-            {
-                // int x = i * 2 - CHUNK_SIZE;
-                // int y = j * 2 - CHUNK_SIZE;
-                // int z = k * 2 - CHUNK_SIZE;
-                this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] = AIR;
-
-                if (k > CHUNK_SIZE / 2)
-                {
-                    this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] = DIRT;
-                }
-
-                // if (std::rand() < RAND_MAX / 10.f)
-                //     this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] = DIRT;
-            }
-        }
-    }
-
+    this->genData();
     this->chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
 }
 
@@ -78,22 +52,15 @@ int Chunk::genRenderData()
                 if (thisBlock == AIR)
                     continue;
 
-                BLOCK xBlock[2] = {
-                    (k + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k + 1, j, i)) : AIR),
-                    (k - 1 >= 0 ? this->getBlockAtR(glm::vec3(k - 1, j, i)) : AIR)
-                };
-                BLOCK yBlock[2] = {
-                    (j + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j + 1, i)) : AIR),
-                    (j - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j - 1, i)) : AIR)
-                };
-                BLOCK zBlock[2] = {
-                    (i + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j, i + 1)) : AIR),
-                    (i - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j, i - 1)) : AIR)
-                };
+                BLOCK xBlock[2] = {(k + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k + 1, j, i)) : AIR),
+                                   (k - 1 >= 0 ? this->getBlockAtR(glm::vec3(k - 1, j, i)) : AIR)};
+                BLOCK yBlock[2] = {(j + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j + 1, i)) : AIR),
+                                   (j - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j - 1, i)) : AIR)};
+                BLOCK zBlock[2] = {(i + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j, i + 1)) : AIR),
+                                   (i - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j, i - 1)) : AIR)};
 
-                if (xBlock[0] != AIR && xBlock[1] != AIR &&
-                    yBlock[0] != AIR && yBlock[1] != AIR &&
-                    zBlock[0] != AIR && zBlock[1] != AIR)
+                if (xBlock[0] != AIR && xBlock[1] != AIR && yBlock[0] != AIR && yBlock[1] != AIR && zBlock[0] != AIR &&
+                    zBlock[1] != AIR)
                 {
                     continue;
                 }
@@ -131,4 +98,37 @@ BLOCK Chunk::getBlockAtR(glm::vec3 pos)
 BLOCK Chunk::getBlockAtNR(glm::vec3 pos)
 {
     return NO_BLOCK;
+}
+
+int Chunk::genData()
+{
+    for (int i = 0; i < CHUNK_SIZE; i++)
+    {
+        for (int j = 0; j < CHUNK_SIZE; j++)
+        {
+            for (int k = 0; k < CHUNK_SIZE; k++)
+            {
+                this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] = this->genBlockAt(i, j, k);
+            }
+        }
+    }
+
+    return CODE_NO_ERROR;
+}
+
+BLOCK Chunk::genBlockAt(int x, int y, int z)
+{
+    BLOCK result = AIR;
+
+    if (y < 10)
+    {
+        result = DIRT;
+    }
+
+    if (x < 10)
+    {
+        result = DIRT;
+    }
+
+    return result;
 }

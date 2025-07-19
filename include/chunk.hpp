@@ -30,6 +30,9 @@ class Chunk
 
     int genRenderData();
 
+    int genData();
+    BLOCK genBlockAt(int x, int y, int z);
+
   public:
     Chunk();
 
