@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 // Crazy glm stuff
+#include <cstddef>
 #include <glm/detail/qualifier.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -126,6 +127,12 @@ int main(void)
             std::cout << "[INFO] | FPS: " << fps.GetFPS() << std::endl;
 
         FPS = fps.GetFPS();
+    }
+        std::cout << "[INFO] | Size: " << renderData.size() << std::endl;
+
+    for(size_t i = 0; i < renderData.size(); i++)
+    {
+        std::cout << std::to_string(renderData.at(i)) << " ";
     }
 
     Window::terminate();

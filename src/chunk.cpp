@@ -2,11 +2,9 @@
 #include "general.hpp"
 #include "shader.hpp"
 
-#include <array>
 #include <cstddef>
 #include <cstdlib>
 #include <glm/fwd.hpp>
-#include <tuple>
 
 Chunk::Chunk()
 {
@@ -55,12 +53,12 @@ RESULT_CODE Chunk::genRenderData()
                 if (thisBlock == AIR)
                     continue;
 
-                BLOCK xBlock[2] = {(k + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k + 1, j, i)) : AIR),
-                                   (k - 1 >= 0 ? this->getBlockAtR(glm::vec3(k - 1, j, i)) : AIR)};
-                BLOCK yBlock[2] = {(j + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j + 1, i)) : AIR),
-                                   (j - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j - 1, i)) : AIR)};
-                BLOCK zBlock[2] = {(i + 1 < CHUNK_SIZE ? this->getBlockAtR(glm::vec3(k, j, i + 1)) : AIR),
-                                   (i - 1 >= 0 ? this->getBlockAtR(glm::vec3(k, j, i - 1)) : AIR)};
+                BLOCK xBlock[2] = {this->getBlockAtR(glm::vec3(k + 1, j, i)),
+                                   this->getBlockAtR(glm::vec3(k - 1, j, i))};
+                BLOCK yBlock[2] = {this->getBlockAtR(glm::vec3(k, j + 1, i)),
+                                   this->getBlockAtR(glm::vec3(k, j - 1, i))};
+                BLOCK zBlock[2] = {this->getBlockAtR(glm::vec3(k, j, i + 1)),
+                                   this->getBlockAtR(glm::vec3(k, j, i - 1))};
 
                 if (xBlock[0] != AIR && xBlock[1] != AIR && yBlock[0] != AIR && yBlock[1] != AIR && zBlock[0] != AIR &&
                     zBlock[1] != AIR)
@@ -144,15 +142,19 @@ RenderData Chunk::getRenderData()
 
 BLOCK Chunk::getBlockAtR(glm::vec3 pos)
 {
-    if (pos.x < 0 || pos.x >= CHUNK_SIZE)
+    if (pos.x < 0 or pos.x >= CHUNK_SIZE)
     {
-        if (pos.y < 0 || pos.y >= CHUNK_SIZE)
-        {
-            if (pos.z < 0 || pos.z >= CHUNK_SIZE)
-            {
-                return NO_BLOCK;
-            }
-        }
+        return AIR;
+    }
+
+    if (pos.y < 0 or pos.y >= CHUNK_SIZE)
+    {
+        return AIR;
+    }
+
+    if (pos.z < 0 or pos.z >= CHUNK_SIZE)
+    {
+        return AIR;
     }
 
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
@@ -160,7 +162,7 @@ BLOCK Chunk::getBlockAtR(glm::vec3 pos)
 
 BLOCK Chunk::getBlockAtNR(glm::vec3 pos)
 {
-    return NO_BLOCK;
+    return AIR;
 }
 
 RESULT_CODE Chunk::genData()
