@@ -1,1 +1,0 @@
-cloc ./build ./src/main.cpp ./src/shader.cpp ./shaders/* ./include/shader.hpp
