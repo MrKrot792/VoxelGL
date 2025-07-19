@@ -1,13 +1,12 @@
 #include "chunk.hpp"
+#include "glad/glad.h"
 #include "include/fps_count.hpp"
-#include "include/glad/glad.h"
 #include "shader.hpp"
 #include "window.hpp"
 
 #include <GLFW/glfw3.h>
 
 // Crazy glm stuff
-#include <cstddef>
 #include <glm/detail/qualifier.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -23,7 +22,6 @@
 #include <iostream>
 #include <ostream>
 #include <string>
-#include <vector>
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
@@ -57,7 +55,8 @@ int main(void)
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    Chunk chunk; // Also generates VBO
+    Chunk chunk1{{16, 0, 0}};
+    Chunk chunk2{{0, 16, 0}};
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -102,13 +101,28 @@ int main(void)
         shader.setMatrix4(std::string("projection"), projection);
         shader.setMatrix4(std::string("view"), view);
 
+        // FIX LATER: Idk what makes VAO bind VBO
+        glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
+        glEnableVertexAttribArray(0);
+        glBindVertexArray(VAO);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        chunk.draw();
+        chunk1.draw();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
-        chunk.draw();
+        chunk1.draw();
+
+        glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
+        glEnableVertexAttribArray(0);
+        glBindVertexArray(VAO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
+        chunk2.draw();
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
+        chunk2.draw();
 
         Window::swapBuffers();
         Window::pollEvents();

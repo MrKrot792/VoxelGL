@@ -19,6 +19,21 @@ Chunk::Chunk()
     glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
 }
 
+Chunk::Chunk(glm::vec3 pos)
+{
+    this->position = pos;
+
+    srand(time(0));
+
+    this->genData();
+
+    this->genRenderData();
+
+    glGenBuffers(1, &this->VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
+}
+
 RESULT_CODE Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
 {
     for (int i = 0; i < CHUNK_SIZE; i++)
@@ -51,9 +66,9 @@ RESULT_CODE Chunk::genRenderData()
         {
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
-                glm::vec3 position(k, j, i);
-                BLOCK thisBlock = this->getBlockAtR(position);
-                position += this->position;
+                glm::vec3 positionR(k, j, i);
+                BLOCK thisBlock = this->getBlockAtR(positionR);
+                positionR += this->position;
 
                 if (thisBlock == AIR)
                     continue;
@@ -76,9 +91,9 @@ RESULT_CODE Chunk::genRenderData()
                 {
                     for (size_t i = 0; i < Directions::RIGHT.size() / 3; i++)
                     {
-                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 0) + position.x);
-                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 1) + position.y);
-                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 2) + position.z);
+                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 2) + positionR.z);
                     }
                 }
 
@@ -86,9 +101,9 @@ RESULT_CODE Chunk::genRenderData()
                 {
                     for (size_t i = 0; i < Directions::LEFT.size() / 3; i++)
                     {
-                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 0) + position.x);
-                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 1) + position.y);
-                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 2) + position.z);
+                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 2) + positionR.z);
                     }
                 }
 
@@ -96,9 +111,9 @@ RESULT_CODE Chunk::genRenderData()
                 {
                     for (size_t i = 0; i < Directions::DOWN.size() / 3; i++)
                     {
-                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 0) + position.x);
-                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 1) + position.y);
-                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 2) + position.z);
+                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 2) + positionR.z);
                     }
                 }
 
@@ -106,9 +121,9 @@ RESULT_CODE Chunk::genRenderData()
                 {
                     for (size_t i = 0; i < Directions::UP.size() / 3; i++)
                     {
-                        this->renderData.push_back(Directions::UP.at(i * 3 + 0) + position.x);
-                        this->renderData.push_back(Directions::UP.at(i * 3 + 1) + position.y);
-                        this->renderData.push_back(Directions::UP.at(i * 3 + 2) + position.z);
+                        this->renderData.push_back(Directions::UP.at(i * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::UP.at(i * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::UP.at(i * 3 + 2) + positionR.z);
                     }
                 }
 
@@ -116,9 +131,9 @@ RESULT_CODE Chunk::genRenderData()
                 {
                     for (size_t i = 0; i < Directions::FRONT.size() / 3; i++)
                     {
-                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 0) + position.x);
-                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 1) + position.y);
-                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 2) + position.z);
+                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 2) + positionR.z);
                     }
                 }
 
@@ -126,9 +141,9 @@ RESULT_CODE Chunk::genRenderData()
                 {
                     for (size_t i = 0; i < Directions::BACK.size() / 3; i++)
                     {
-                        this->renderData.push_back(Directions::BACK.at(i * 3 + 0) + position.x);
-                        this->renderData.push_back(Directions::BACK.at(i * 3 + 1) + position.y);
-                        this->renderData.push_back(Directions::BACK.at(i * 3 + 2) + position.z);
+                        this->renderData.push_back(Directions::BACK.at(i * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::BACK.at(i * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::BACK.at(i * 3 + 2) + positionR.z);
                     }
                 }
             }
@@ -146,17 +161,17 @@ RenderData Chunk::getRenderData()
 
 BLOCK Chunk::getBlockAtR(glm::vec3 pos)
 {
-    if (pos.x < 0 or pos.x >= CHUNK_SIZE)
+    if (pos.x <= 0 or pos.x >= CHUNK_SIZE)
     {
         return AIR;
     }
 
-    if (pos.y < 0 or pos.y >= CHUNK_SIZE)
+    if (pos.y <= 0 or pos.y >= CHUNK_SIZE)
     {
         return AIR;
     }
 
-    if (pos.z < 0 or pos.z >= CHUNK_SIZE)
+    if (pos.z <= 0 or pos.z >= CHUNK_SIZE)
     {
         return AIR;
     }
@@ -166,7 +181,22 @@ BLOCK Chunk::getBlockAtR(glm::vec3 pos)
 
 BLOCK Chunk::getBlockAtNR(glm::vec3 pos)
 {
-    return AIR;
+    if (pos.x < 0 + position.x or pos.x >= CHUNK_SIZE + position.x)
+    {
+        return AIR;
+    }
+
+    if (pos.y < 0 + position.y or pos.y >= CHUNK_SIZE + position.y)
+    {
+        return AIR;
+    }
+
+    if (pos.z < 0 + position.z or pos.z >= CHUNK_SIZE + position.z)
+    {
+        return AIR;
+    }
+
+    return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
 RESULT_CODE Chunk::genData()
@@ -209,7 +239,13 @@ BLOCK Chunk::genBlockAt(int x, int y, int z)
 
 RESULT_CODE Chunk::draw()
 {
+    std::cout << "[DEBUG] | Drawn chunk at: ";
+    printVector(this->position);
+    std::cout << "\n";
+
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
     glDrawArrays(GL_TRIANGLES, 0, renderData.size());
 
     return RESULT_CODE::CODE_NO_ERROR;

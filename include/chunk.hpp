@@ -26,7 +26,7 @@ class Chunk
     BLOCK data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
     RenderData renderData;
 
-    glm::vec3 position; // Chunk position in the world divided by CHUNK_SIZE
+    glm::vec3 position = {0, 0, 0}; 
 
     RESULT_CODE genRenderData();
 
@@ -37,6 +37,7 @@ class Chunk
 
   public:
     Chunk();
+    Chunk(glm::vec3 pos);
 
     RESULT_CODE setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE]);
     BLOCK *getData();
