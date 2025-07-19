@@ -54,53 +54,28 @@ int main(void)
         return -1;
     }
 
-    float vertices[] = {-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1};
-    std::vector<glm::vec3> offset;
-
-    std::vector<unsigned int> indices = {3, 1, 0, 2, 1, 3, 2, 5, 1, 6, 5, 2, 6, 4, 5, 7, 4, 6,
-                                         7, 0, 4, 3, 0, 7, 7, 2, 3, 6, 2, 7, 0, 5, 4, 1, 5, 0};
-
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    Chunk a;
+    Chunk chunk;
 
-    auto renderData = a.getRenderData();
-
-    for (auto i : renderData)
-    {
-        offset.push_back(i.first);
-    }
-
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    auto renderData = chunk.getRenderData();
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, renderData.size(), renderData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
     glEnableVertexAttribArray(0);
-
-    GLuint offsetVBO;
-    glGenBuffers(1, &offsetVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, offsetVBO);
-    glBufferData(GL_ARRAY_BUFFER, offset.size() * sizeof(glm::vec3), offset.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribDivisor(1, 1);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
-    glEnable(GL_CULL_FACE);
 
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
     FPSCounter fps;
@@ -136,11 +111,11 @@ int main(void)
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, offset.size());
+        glDrawArrays(GL_TRIANGLES, 0, renderData.size());
 
-        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, offset.size());
+        shader.setVec3(std::string("color"), glm::vec3(0, 0, 0));
+        glDrawArrays(GL_TRIANGLES, 0, renderData.size());
 
         Window::swapBuffers();
         Window::pollEvents();

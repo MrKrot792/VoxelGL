@@ -30,7 +30,7 @@ struct Directions
     };
 };
 
-void printVector(glm::vec3 vec)
+inline void printVector(glm::vec3 vec)
 {
     std::cout << "[INFO] | " << "X: " << vec.x << ", Y: " << vec.y << ", Z:" << vec.z;
 }

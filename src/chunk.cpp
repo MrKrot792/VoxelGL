@@ -2,8 +2,11 @@
 #include "general.hpp"
 #include "shader.hpp"
 
+#include <array>
+#include <cstddef>
 #include <cstdlib>
 #include <glm/fwd.hpp>
+#include <tuple>
 
 Chunk::Chunk()
 {
@@ -65,36 +68,66 @@ RESULT_CODE Chunk::genRenderData()
                     continue;
                 }
 
-                // I know this is very highly unoptimized shit, please don't execute me 
+                // I know this is very highly unoptimized shit, please don't execute me
 
                 if (xBlock[0] != AIR)
                 {
-                    this->renderData.insert(this->renderData.end(), Directions::RIGHT.begin(), Directions::RIGHT.end());
+                    for (size_t i = 0; i < Directions::RIGHT.size() / 3; i++)
+                    {
+                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 0) + position.x);
+                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 1) + position.y);
+                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 2) + position.z);
+                    }
                 }
 
                 if (xBlock[1] != AIR)
                 {
-                    this->renderData.insert(this->renderData.end(), Directions::LEFT.begin(), Directions::LEFT.end());
+                    for (size_t i = 0; i < Directions::LEFT.size() / 3; i++)
+                    {
+                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 0) + position.x);
+                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 1) + position.y);
+                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 2) + position.z);
+                    }
                 }
 
                 if (yBlock[0] != AIR)
                 {
-                    this->renderData.insert(this->renderData.end(), Directions::UP.begin(), Directions::UP.end());
+                    for (size_t i = 0; i < Directions::DOWN.size() / 3; i++)
+                    {
+                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 0) + position.x);
+                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 1) + position.y);
+                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 2) + position.z);
+                    }
                 }
 
                 if (yBlock[1] != AIR)
                 {
-                    this->renderData.insert(this->renderData.end(), Directions::DOWN.begin(), Directions::DOWN.end());
+                    for (size_t i = 0; i < Directions::UP.size() / 3; i++)
+                    {
+                        this->renderData.push_back(Directions::UP.at(i * 3 + 0) + position.x);
+                        this->renderData.push_back(Directions::UP.at(i * 3 + 1) + position.y);
+                        this->renderData.push_back(Directions::UP.at(i * 3 + 2) + position.z);
+                    }
                 }
 
                 if (zBlock[0] != AIR)
                 {
-                    this->renderData.insert(this->renderData.end(), Directions::BACK.begin(), Directions::BACK.end());
+                    for (size_t i = 0; i < Directions::FRONT.size() / 3; i++)
+                    {
+                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 0) + position.x);
+                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 1) + position.y);
+                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 2) + position.z);
+                    }
                 }
 
                 if (zBlock[1] != AIR)
                 {
-                    this->renderData.insert(this->renderData.end(), Directions::FRONT.begin(), Directions::FRONT.end());
+                    for (size_t i = 0; i < Directions::BACK.size() / 3; i++)
+                    {
+                        this->renderData.push_back(Directions::BACK.at(i * 3 + 0) + position.x);
+                        this->renderData.push_back(Directions::BACK.at(i * 3 + 1) + position.y);
+                        this->renderData.push_back(Directions::BACK.at(i * 3 + 2) + position.z);
+                    }
                 }
             }
         }
