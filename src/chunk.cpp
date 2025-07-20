@@ -219,11 +219,21 @@ RESULT_CODE Chunk::genData()
 
 BLOCK Chunk::genBlockAt(glm::vec3 pos)
 {
-    BLOCK result = AIR;
+    BLOCK result = DIRT;
 
     // Procedural generation (kinda)
-    if(pos.y < sin(pos.x / 8 * M_PI) * 8 + 10)
-        result = DIRT;
+
+    if(pos == glm::vec3(5, 5, 9))
+        result = AIR;
+
+    if(pos == glm::vec3(7, 5, 9))
+        result = AIR;
+
+    if(pos == glm::vec3(5, 5, 13))
+        result = AIR;
+
+    if(pos == glm::vec3(6, 5, 13))
+        result = AIR;
 
     return result;
 }

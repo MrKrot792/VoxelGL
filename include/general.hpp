@@ -14,19 +14,19 @@ enum class RESULT_CODE
 
 struct Directions
 {
-    static inline const std::vector<int> FRONT = {-1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1};
+    static inline const std::vector<int> FRONT = {-1, 1, 0, 1, -1, 0, -1, -1, 0, 1, 1, 0, 1, -1, 0, -1, 1, 0};
+    static inline const std::vector<int> BACK = {1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1, -1, 0, 1, 1, 0};
     static inline const std::vector<int> LEFT = {
-        1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1,
+        0, 1, -1, 0, -1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0, 1, -1,
     };
-    static inline const std::vector<int> BACK = {1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1};
     static inline const std::vector<int> RIGHT = {
-        -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1,
+        -0, 1, 1, -0, -1, -1, -0, -1, 1, -0, 1, -1, -0, -1, -1, -0, 1, 1,
     };
     static inline const std::vector<int> UP = {
-        -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, -1, 1, 1,
+        -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0, 1, 1, 0, -1, -1, 0, 1,
     };
     static inline const std::vector<int> DOWN = {
-        -1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1,
+        -1, -0, -1, 1, -0, 1, -1, -0, 1, 1, -0, -1, 1, -0, 1, -1, -0, -1,
     };
 };
 
