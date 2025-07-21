@@ -88,61 +88,61 @@ RESULT_CODE Chunk::genRenderData()
                 // I know this is very highly unoptimized shit, please don't execute me
                 if (xBlock[1] == AIR)
                 {
-                    for (size_t i = 0; i < Directions::RIGHT.size() / 3; i++)
+                    for (size_t v = 0; v < Directions::RIGHT.size() / 3; v++)
                     {
-                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 0) + positionR.x);
-                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 1) + positionR.y);
-                        this->renderData.push_back(Directions::RIGHT.at(i * 3 + 2) + positionR.z);
+                        this->renderData.push_back(Directions::RIGHT.at(v * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::RIGHT.at(v * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::RIGHT.at(v * 3 + 2) + positionR.z);
                     }
                 }
 
                 if (xBlock[0] == AIR)
                 {
-                    for (size_t i = 0; i < Directions::LEFT.size() / 3; i++)
+                    for (size_t v = 0; v < Directions::LEFT.size() / 3; v++)
                     {
-                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 0) + positionR.x);
-                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 1) + positionR.y);
-                        this->renderData.push_back(Directions::LEFT.at(i * 3 + 2) + positionR.z);
+                        this->renderData.push_back(Directions::LEFT.at(v * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::LEFT.at(v * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::LEFT.at(v * 3 + 2) + positionR.z);
                     }
                 }
 
                 if (yBlock[1] == AIR)
                 {
-                    for (size_t i = 0; i < Directions::DOWN.size() / 3; i++)
+                    for (size_t v = 0; v < Directions::DOWN.size() / 3; v++)
                     {
-                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 0) + positionR.x);
-                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 1) + positionR.y);
-                        this->renderData.push_back(Directions::DOWN.at(i * 3 + 2) + positionR.z);
+                        this->renderData.push_back(Directions::DOWN.at(v * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::DOWN.at(v * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::DOWN.at(v * 3 + 2) + positionR.z);
                     }
                 }
 
                 if (yBlock[0] == AIR)
                 {
-                    for (size_t i = 0; i < Directions::UP.size() / 3; i++)
+                    for (size_t v = 0; v < Directions::UP.size() / 3; v++)
                     {
-                        this->renderData.push_back(Directions::UP.at(i * 3 + 0) + positionR.x);
-                        this->renderData.push_back(Directions::UP.at(i * 3 + 1) + positionR.y);
-                        this->renderData.push_back(Directions::UP.at(i * 3 + 2) + positionR.z);
+                        this->renderData.push_back(Directions::UP.at(v * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::UP.at(v * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::UP.at(v * 3 + 2) + positionR.z);
                     }
                 }
 
                 if (zBlock[1] == AIR)
                 {
-                    for (size_t i = 0; i < Directions::FRONT.size() / 3; i++)
+                    for (size_t v = 0; v < Directions::FRONT.size() / 3; v++)
                     {
-                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 0) + positionR.x);
-                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 1) + positionR.y);
-                        this->renderData.push_back(Directions::FRONT.at(i * 3 + 2) + positionR.z);
+                        this->renderData.push_back(Directions::FRONT.at(v * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::FRONT.at(v * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::FRONT.at(v * 3 + 2) + positionR.z);
                     }
                 }
 
                 if (zBlock[0] == AIR)
                 {
-                    for (size_t i = 0; i < Directions::BACK.size() / 3; i++)
+                    for (size_t v = 0; v < Directions::BACK.size() / 3; v++)
                     {
-                        this->renderData.push_back(Directions::BACK.at(i * 3 + 0) + positionR.x);
-                        this->renderData.push_back(Directions::BACK.at(i * 3 + 1) + positionR.y);
-                        this->renderData.push_back(Directions::BACK.at(i * 3 + 2) + positionR.z);
+                        this->renderData.push_back(Directions::BACK.at(v * 3 + 0) + positionR.x);
+                        this->renderData.push_back(Directions::BACK.at(v * 3 + 1) + positionR.y);
+                        this->renderData.push_back(Directions::BACK.at(v * 3 + 2) + positionR.z);
                     }
                 }
             }

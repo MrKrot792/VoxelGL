@@ -11,10 +11,10 @@
 
 enum BLOCK
 {
-    NO_BLOCK,
     AIR,
     DIRT,
     GRASS,
+    NO_BLOCK = 255,
 };
 
 typedef std::pair<glm::vec3, BLOCK> BlockData;

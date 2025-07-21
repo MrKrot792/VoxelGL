@@ -104,8 +104,6 @@ int main(void)
         shader.setMatrix4(std::string("projection"), projection);
         shader.setMatrix4(std::string("view"), view);
 
-        // FIX LATER: Idk what makes VAO bind VBO
-
         for (auto i : chunks)
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
