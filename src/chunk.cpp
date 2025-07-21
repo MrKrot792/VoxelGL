@@ -12,7 +12,6 @@ Chunk::Chunk()
     srand(time(0));
 
     this->genData();
-
     this->genRenderData();
 
     glGenBuffers(1, &this->VBO);
@@ -27,7 +26,6 @@ Chunk::Chunk(glm::vec3 pos)
     srand(time(0));
 
     this->genData();
-
     this->genRenderData();
 
     glGenBuffers(1, &this->VBO);
