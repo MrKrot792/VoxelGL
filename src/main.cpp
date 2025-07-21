@@ -58,15 +58,17 @@ int main(void)
 
     std::vector<Chunk> chunks;
 
-    for (int i = 0; i < 4; i++)
+    int size = 8;
+
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < size; j++)
         {
-            for (int k = 0; k < 4; k++)
+            for (int k = 0; k < size; k++)
             {
-                int x = i - 2;
-                int y = j - 2;
-                int z = k - 2;
+                int x = i - size / 2;
+                int y = j - size / 2;
+                int z = k - size / 2;
 
                 chunks.push_back(Chunk(glm::vec3(x * 16, y * 16, z * 16)));
             }

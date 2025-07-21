@@ -1,1 +1,1 @@
-g++ src/*.cpp lib/*.c -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wall -Wextra -o glprogram -I. -Iinclude -Ilib -g -O0
+g++ src/*.cpp lib/*.c ./lib/perlin/perlin.c -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wall -Wextra -o glprogram -I. -Iinclude -Ilib -g -O0
