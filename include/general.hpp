@@ -12,23 +12,57 @@ enum class RESULT_CODE
     CODE_FATAL_ERROR
 };
 
-struct Directions
+typedef std::vector<int> Direction;
+
+enum class Directions
 {
-    static inline const std::vector<int> FRONT = {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0};
-    static inline const std::vector<int> LEFT = {
-        1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0,
-    };
-    static inline const std::vector<int> BACK = {1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1};
-    static inline const std::vector<int> RIGHT = {
-        0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1,
-    };
-    static inline const std::vector<int> UP = {
-        0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1,
-    };
-    static inline const std::vector<int> DOWN = {
-        0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0,
-    };
+    FRONT,
+    BACK,
+    RIGHT,
+    LEFT,
+    UP,
+    DOWN,
 };
+
+inline std::vector<int> getDirection(Directions dir)
+{
+    std::vector<int> result;
+
+    switch (dir)
+    {
+    case Directions::FRONT:
+        result = {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0};
+        break;
+
+    case Directions::BACK:
+        result = {1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1};
+        break;
+
+    case Directions::RIGHT:
+        result = {0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1};
+        break;
+
+    case Directions::LEFT:
+        result = {
+            1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+        };
+        break;
+
+    case Directions::UP:
+        result = {
+            0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1,
+        };
+        break;
+
+    case Directions::DOWN:
+        result = {
+            0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0,
+        };
+        break;
+    }
+
+    return result;
+}
 
 inline void printVector(glm::vec3 vec)
 {
