@@ -160,17 +160,17 @@ RenderData Chunk::getRenderData()
 
 BLOCK Chunk::getBlockAtR(glm::vec3 pos)
 {
-    if (pos.x <= 0 or pos.x >= CHUNK_SIZE)
+    if (pos.x < 0 or pos.x >= CHUNK_SIZE)
     {
         return AIR;
     }
 
-    if (pos.y <= 0 or pos.y >= CHUNK_SIZE)
+    if (pos.y < 0 or pos.y >= CHUNK_SIZE)
     {
         return AIR;
     }
 
-    if (pos.z <= 0 or pos.z >= CHUNK_SIZE)
+    if (pos.z < 0 or pos.z >= CHUNK_SIZE)
     {
         return AIR;
     }
