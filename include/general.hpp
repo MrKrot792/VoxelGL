@@ -12,7 +12,9 @@ enum class RESULT_CODE
     CODE_FATAL_ERROR
 };
 
-enum class Direction
+typedef std::vector<int> Direction;
+
+enum class Directions
 {
     FRONT,
     BACK,
@@ -22,37 +24,37 @@ enum class Direction
     DOWN,
 };
 
-inline std::vector<int> getDirection(Direction dir)
+inline std::vector<int> getDirection(Directions dir)
 {
     std::vector<int> result;
 
     switch (dir)
     {
-    case Direction::FRONT:
+    case Directions::FRONT:
         result = {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0};
         break;
 
-    case Direction::BACK:
+    case Directions::BACK:
         result = {1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1};
         break;
 
-    case Direction::RIGHT:
+    case Directions::RIGHT:
         result = {0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1};
         break;
 
-    case Direction::LEFT:
+    case Directions::LEFT:
         result = {
             1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0,
         };
         break;
 
-    case Direction::UP:
+    case Directions::UP:
         result = {
             0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1,
         };
         break;
 
-    case Direction::DOWN:
+    case Directions::DOWN:
         result = {
             0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0,
         };
