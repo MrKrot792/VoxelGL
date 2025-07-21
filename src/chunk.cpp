@@ -77,12 +77,6 @@ RESULT_CODE Chunk::genRenderData()
                 BlockData zBlock[2] = {this->getBlockAtR(glm::vec3(k, j, i + 1)),
                                        this->getBlockAtR(glm::vec3(k, j, i - 1))};
 
-                if (xBlock[0].type != AIR && xBlock[1].type != AIR && yBlock[0].type != AIR && yBlock[1].type != AIR &&
-                    zBlock[0].type != AIR && zBlock[1].type != AIR)
-                {
-                    continue;
-                }
-
                 std::vector<std::pair<BlockData, Direction>> a = {
                     {xBlock[1], getDirection(Directions::RIGHT)}, {xBlock[0], getDirection(Directions::LEFT)},
                     {yBlock[1], getDirection(Directions::DOWN)},  {yBlock[0], getDirection(Directions::UP)},
@@ -117,17 +111,17 @@ BlockData Chunk::getBlockAtR(glm::vec3 pos)
 {
     if (pos.x < 0 or pos.x >= CHUNK_SIZE)
     {
-        return BlockData(AIR);
+        return genBlockAt(pos);
     }
 
     if (pos.y < 0 or pos.y >= CHUNK_SIZE)
     {
-        return BlockData(AIR);
+        return genBlockAt(pos);
     }
 
     if (pos.z < 0 or pos.z >= CHUNK_SIZE)
     {
-        return BlockData(AIR);
+        return genBlockAt(pos);
     }
 
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
@@ -137,17 +131,17 @@ BlockData Chunk::getBlockAtNR(glm::vec3 pos)
 {
     if (pos.x < 0 + position.x or pos.x >= CHUNK_SIZE + position.x)
     {
-        return BlockData(AIR);
+        return genBlockAt(pos);
     }
 
     if (pos.y < 0 + position.y or pos.y >= CHUNK_SIZE + position.y)
     {
-        return BlockData(AIR);
+        return genBlockAt(pos);
     }
 
     if (pos.z < 0 + position.z or pos.z >= CHUNK_SIZE + position.z)
     {
-        return BlockData(AIR);
+        return genBlockAt(pos);
     }
 
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
@@ -175,7 +169,6 @@ BlockData Chunk::genBlockAt(glm::vec3 pos)
     BLOCK_TYPE result = DIRT;
 
     // Procedural generation (kinda)
-
     if (pos.y >= 0)
         result = AIR;
 
