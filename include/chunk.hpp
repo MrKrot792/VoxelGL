@@ -28,8 +28,6 @@ class Chunk
 
     glm::vec3 position; // Chunk position in the world divided by CHUNK_SIZE
 
-    Shader chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
-
     RESULT_CODE genRenderData();
 
     RESULT_CODE genData();

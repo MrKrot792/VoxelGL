@@ -55,7 +55,7 @@ int main(void)
         return -1;
     }
 
-    Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
+    Shader shader("assets/shaders/vertex.vert", "assets/shaders/fragment.frag");
 
     Chunk chunk;
 

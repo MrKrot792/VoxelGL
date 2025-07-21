@@ -11,8 +11,6 @@ Chunk::Chunk()
     srand(time(0));
 
     this->genData();
-
-    this->chunk_shader = Shader("shaders/vertex.vert", "shaders/fragment.frag");
 }
 
 RESULT_CODE Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
