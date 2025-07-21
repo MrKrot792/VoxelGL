@@ -2,7 +2,6 @@
 #include "general.hpp"
 #include "shader.hpp"
 
-#include <cmath>
 #include <cstddef>
 #include <cstdlib>
 #include <glm/fwd.hpp>
@@ -10,7 +9,6 @@
 Chunk::Chunk()
 {
     srand(time(0));
-
     this->genData();
     this->genRenderData();
 
@@ -24,7 +22,6 @@ Chunk::Chunk(glm::vec3 pos)
     this->position = pos;
 
     srand(time(0));
-
     this->genData();
     this->genRenderData();
 
@@ -33,7 +30,7 @@ Chunk::Chunk(glm::vec3 pos)
     glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
 }
 
-RESULT_CODE Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
+RESULT_CODE Chunk::setData(BlockData _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
 {
     for (int i = 0; i < CHUNK_SIZE; i++)
     {
@@ -50,7 +47,7 @@ RESULT_CODE Chunk::setData(BLOCK _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
     return RESULT_CODE::CODE_NO_ERROR;
 }
 
-BLOCK *Chunk::getData()
+BlockData *Chunk::getData()
 {
     return this->data;
 }
@@ -66,27 +63,27 @@ RESULT_CODE Chunk::genRenderData()
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
                 glm::vec3 positionR(k, j, i);
-                BLOCK thisBlock = this->getBlockAtR(positionR);
+                BlockData thisBlock = this->getBlockAtR(positionR);
                 positionR += this->position;
 
-                if (thisBlock == AIR)
+                if (thisBlock.type == AIR)
                     continue;
 
-                BLOCK xBlock[2] = {this->getBlockAtR(glm::vec3(k + 1, j, i)),
-                                   this->getBlockAtR(glm::vec3(k - 1, j, i))};
-                BLOCK yBlock[2] = {this->getBlockAtR(glm::vec3(k, j + 1, i)),
-                                   this->getBlockAtR(glm::vec3(k, j - 1, i))};
-                BLOCK zBlock[2] = {this->getBlockAtR(glm::vec3(k, j, i + 1)),
-                                   this->getBlockAtR(glm::vec3(k, j, i - 1))};
+                BlockData xBlock[2] = {this->getBlockAtR(glm::vec3(k + 1, j, i)),
+                                       this->getBlockAtR(glm::vec3(k - 1, j, i))};
+                BlockData yBlock[2] = {this->getBlockAtR(glm::vec3(k, j + 1, i)),
+                                       this->getBlockAtR(glm::vec3(k, j - 1, i))};
+                BlockData zBlock[2] = {this->getBlockAtR(glm::vec3(k, j, i + 1)),
+                                       this->getBlockAtR(glm::vec3(k, j, i - 1))};
 
-                if (xBlock[0] != AIR && xBlock[1] != AIR && yBlock[0] != AIR && yBlock[1] != AIR && zBlock[0] != AIR &&
-                    zBlock[1] != AIR)
+                if (xBlock[0].type != AIR && xBlock[1].type != AIR && yBlock[0].type != AIR && yBlock[1].type != AIR &&
+                    zBlock[0].type != AIR && zBlock[1].type != AIR)
                 {
                     continue;
                 }
-
+                
                 // I know this is very highly unoptimized shit, please don't execute me
-                if (xBlock[1] == AIR)
+                if (xBlock[1].type == AIR)
                 {
                     for (size_t v = 0; v < Directions::RIGHT.size() / 3; v++)
                     {
@@ -96,7 +93,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (xBlock[0] == AIR)
+                if (xBlock[0].type == AIR)
                 {
                     for (size_t v = 0; v < Directions::LEFT.size() / 3; v++)
                     {
@@ -106,7 +103,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (yBlock[1] == AIR)
+                if (yBlock[1].type == AIR)
                 {
                     for (size_t v = 0; v < Directions::DOWN.size() / 3; v++)
                     {
@@ -116,7 +113,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (yBlock[0] == AIR)
+                if (yBlock[0].type == AIR)
                 {
                     for (size_t v = 0; v < Directions::UP.size() / 3; v++)
                     {
@@ -126,7 +123,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (zBlock[1] == AIR)
+                if (zBlock[1].type == AIR)
                 {
                     for (size_t v = 0; v < Directions::FRONT.size() / 3; v++)
                     {
@@ -136,7 +133,7 @@ RESULT_CODE Chunk::genRenderData()
                     }
                 }
 
-                if (zBlock[0] == AIR)
+                if (zBlock[0].type == AIR)
                 {
                     for (size_t v = 0; v < Directions::BACK.size() / 3; v++)
                     {
@@ -158,41 +155,41 @@ RenderData Chunk::getRenderData()
     return this->renderData;
 }
 
-BLOCK Chunk::getBlockAtR(glm::vec3 pos)
+BlockData Chunk::getBlockAtR(glm::vec3 pos)
 {
     if (pos.x < 0 or pos.x >= CHUNK_SIZE)
     {
-        return AIR;
+        return BlockData(AIR);
     }
 
     if (pos.y < 0 or pos.y >= CHUNK_SIZE)
     {
-        return AIR;
+        return BlockData(AIR);
     }
 
     if (pos.z < 0 or pos.z >= CHUNK_SIZE)
     {
-        return AIR;
+        return BlockData(AIR);
     }
 
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
-BLOCK Chunk::getBlockAtNR(glm::vec3 pos)
+BlockData Chunk::getBlockAtNR(glm::vec3 pos)
 {
     if (pos.x < 0 + position.x or pos.x >= CHUNK_SIZE + position.x)
     {
-        return AIR;
+        return BlockData(AIR);
     }
 
     if (pos.y < 0 + position.y or pos.y >= CHUNK_SIZE + position.y)
     {
-        return AIR;
+        return BlockData(AIR);
     }
 
     if (pos.z < 0 + position.z or pos.z >= CHUNK_SIZE + position.z)
     {
-        return AIR;
+        return BlockData(AIR);
     }
 
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
@@ -215,9 +212,9 @@ RESULT_CODE Chunk::genData()
     return RESULT_CODE::CODE_NO_ERROR;
 }
 
-BLOCK Chunk::genBlockAt(glm::vec3 pos)
+BlockData Chunk::genBlockAt(glm::vec3 pos)
 {
-    BLOCK result = DIRT;
+    BLOCK_TYPE result = DIRT;
 
     // Procedural generation (kinda)
 
@@ -239,13 +236,13 @@ BLOCK Chunk::genBlockAt(glm::vec3 pos)
         {
             for (int k = 0; k < 2; k++)
             {
-                if(pos == glm::vec3(i + 3, j + 3, k + 3))
+                if (pos == glm::vec3(i + 3, j + 3, k + 3))
                     result = AIR;
             }
         }
     }
 
-    return result;
+    return BlockData(result);
 }
 
 RESULT_CODE Chunk::draw()
