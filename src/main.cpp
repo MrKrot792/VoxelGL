@@ -58,8 +58,20 @@ int main(void)
 
     std::vector<Chunk> chunks;
 
-    chunks.push_back(Chunk(glm::vec3(0, 0, 0)));
-    chunks.push_back(Chunk(glm::vec3(16, 0, 0)));
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                int x = i - 2;
+                int y = j - 2;
+                int z = k - 2;
+
+                chunks.push_back(Chunk(glm::vec3(x * 16, y * 16, z * 16)));
+            }
+        }
+    }
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);

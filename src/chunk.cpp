@@ -5,7 +5,6 @@
 #include <cstddef>
 #include <cstdlib>
 #include <glm/fwd.hpp>
-#include <iostream>
 #include <utility>
 
 Chunk::Chunk()
@@ -177,29 +176,8 @@ BlockData Chunk::genBlockAt(glm::vec3 pos)
 
     // Procedural generation (kinda)
 
-    if (pos == glm::vec3(5, 5, 9))
+    if (pos.y >= 0)
         result = AIR;
-
-    if (pos == glm::vec3(7, 5, 9))
-        result = AIR;
-
-    if (pos == glm::vec3(5, 5, 13))
-        result = AIR;
-
-    if (pos == glm::vec3(6, 5, 13))
-        result = AIR;
-
-    for (int i = 0; i < 2; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            for (int k = 0; k < 2; k++)
-            {
-                if (pos == glm::vec3(i + 3, j + 3, k + 3))
-                    result = AIR;
-            }
-        }
-    }
 
     return BlockData(result);
 }
