@@ -1,6 +1,7 @@
 #include "chunk.hpp"
 #include "general.hpp"
 #include "shader.hpp"
+#include "generation.hpp"
 
 #include <cstddef>
 #include <cstdlib>
@@ -70,12 +71,12 @@ RESULT_CODE Chunk::genRenderData()
                 if (thisBlock.type == AIR)
                     continue;
 
-                BlockData xBlock[2] = {this->getBlockAtR(glm::vec3(k + 1, j, i)),
-                                       this->getBlockAtR(glm::vec3(k - 1, j, i))};
-                BlockData yBlock[2] = {this->getBlockAtR(glm::vec3(k, j + 1, i)),
-                                       this->getBlockAtR(glm::vec3(k, j - 1, i))};
-                BlockData zBlock[2] = {this->getBlockAtR(glm::vec3(k, j, i + 1)),
-                                       this->getBlockAtR(glm::vec3(k, j, i - 1))};
+                BlockData xBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x + 1, positionR.y, positionR.z)),
+                                       this->getBlockAtNR(glm::vec3(positionR.x - 1, positionR.y, positionR.z))};
+                BlockData yBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x, positionR.y + 1, positionR.z)),
+                                       this->getBlockAtNR(glm::vec3(positionR.x, positionR.y - 1, positionR.z))};
+                BlockData zBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x, positionR.y, positionR.z + 1)),
+                                       this->getBlockAtNR(glm::vec3(positionR.x, positionR.y, positionR.z - 1))};
 
                 std::vector<std::pair<BlockData, Direction>> a = {
                     {xBlock[1], getDirection(Directions::RIGHT)}, {xBlock[0], getDirection(Directions::LEFT)},
@@ -109,19 +110,20 @@ RenderData Chunk::getRenderData()
 
 BlockData Chunk::getBlockAtR(glm::vec3 pos)
 {
+    // INEFFICIENT
     if (pos.x < 0 or pos.x >= CHUNK_SIZE)
     {
-        return genBlockAt(pos);
+        return generation::genBlockAt(pos);
     }
 
     if (pos.y < 0 or pos.y >= CHUNK_SIZE)
     {
-        return genBlockAt(pos);
+        return generation::genBlockAt(pos);
     }
 
     if (pos.z < 0 or pos.z >= CHUNK_SIZE)
     {
-        return genBlockAt(pos);
+        return generation::genBlockAt(pos);
     }
 
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
@@ -129,22 +131,25 @@ BlockData Chunk::getBlockAtR(glm::vec3 pos)
 
 BlockData Chunk::getBlockAtNR(glm::vec3 pos)
 {
+    // INEFFICIENT
     if (pos.x < 0 + position.x or pos.x >= CHUNK_SIZE + position.x)
     {
-        return genBlockAt(pos);
+        return generation::genBlockAt(pos);
     }
 
     if (pos.y < 0 + position.y or pos.y >= CHUNK_SIZE + position.y)
     {
-        return genBlockAt(pos);
+        return generation::genBlockAt(pos);
     }
 
     if (pos.z < 0 + position.z or pos.z >= CHUNK_SIZE + position.z)
     {
-        return genBlockAt(pos);
+        return generation::genBlockAt(pos);
     }
 
-    return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
+    glm::vec3 p = glm::vec3(pos.x - this->position.x, pos.y - this->position.y, pos.z - this->position.z);
+
+    return data[(int)p.x + (int)p.y * CHUNK_SIZE + (int)p.z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
 RESULT_CODE Chunk::genData()
@@ -156,23 +161,12 @@ RESULT_CODE Chunk::genData()
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
                 this->data[k + j * CHUNK_SIZE + i * CHUNK_SIZE * CHUNK_SIZE] =
-                    this->genBlockAt(glm::vec3(k, j, i) + this->position);
+                    generation::genBlockAt(glm::vec3(k, j, i) + this->position);
             }
         }
     }
 
     return RESULT_CODE::CODE_NO_ERROR;
-}
-
-BlockData Chunk::genBlockAt(glm::vec3 pos)
-{
-    BLOCK_TYPE result = DIRT;
-
-    // Procedural generation (kinda)
-    if (pos.y >= 0)
-        result = AIR;
-
-    return BlockData(result);
 }
 
 RESULT_CODE Chunk::draw()
