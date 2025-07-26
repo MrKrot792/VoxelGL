@@ -1,22 +1,22 @@
 #pragma once
 
 #include "chunk.hpp"
+#include "FastNoiseLite.hpp"
 
+#include <cmath>
 #include <glm/fwd.hpp>
 
 namespace generation
 {
-static inline BlockData genBlockAt(glm::vec3 at)
+inline BlockData genBlockAt(glm::ivec3 at)
 {
+    // INEFFICIENT
+    FastNoiseLite noise;
+    noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+
     BLOCK_TYPE result = DIRT;
 
-    if(at.y >= 0)
-        result = AIR;
-
-    if(at.y <= -40)
-        result = AIR;
-
-    if(at.x >= 30)
+    if(at.y >= pow(noise.GetNoise((float)at.x, (float)at.z) * 4.f, 2))
         result = AIR;
 
     return BlockData(result);

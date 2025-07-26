@@ -10,7 +10,6 @@
 
 Chunk::Chunk()
 {
-    srand(time(0));
     this->genData();
     this->genRenderData();
 
@@ -23,7 +22,6 @@ Chunk::Chunk(glm::vec3 pos)
 {
     this->position = pos;
 
-    srand(time(0));
     this->genData();
     this->genRenderData();
 
