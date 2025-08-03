@@ -8,9 +8,9 @@
 
 # 1. How to build?
 ## 1.1. On Linux:
-Clone the repo:
+Clone the repo (and submodules):
 ```
-git clone https://github.com/MrKrot792/VoxelGL
+git clone https://github.com/MrKrot792/VoxelGL --recurse-submodules
 ```
 
 Then, build with CMake:
