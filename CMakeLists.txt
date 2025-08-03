@@ -30,13 +30,24 @@ file(GLOB_RECURSE SRC_FILES
     ${PROJECT_SOURCE_DIR}/lib/*.c
 )
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/external/glfw/)
-add_subdirectory(${PROJECT_SOURCE_DIR}/external/glm)
-
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
+find_package(glfw3)
+if(glfw3_FOUND)
+    target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+else()
+    message("Could not find glfw, fallback to subproject")
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glfw/)
+endif()
+
+find_package(glm)
+if(glm_FOUND)
+    target_link_libraries(${PROJECT_NAME} PRIVATE glm)
+else()
+    message("Could not find glm, fallback to subproject")
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glm)
+endif()
+
 find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
-find_package(glm REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL glfw glm)
