@@ -7,11 +7,11 @@
 namespace Window
 {
 
-inline uint vsync = 0; // Turned off
-inline uint antialiasingLevel = 4;
+inline unsigned int vsync = 0; // Turned off
+inline unsigned int antialiasingLevel = 4;
 
-inline uint width = 800;
-inline uint height = 600;
+inline unsigned int width = 800;
+inline unsigned int height = 600;
 
 inline GLFWwindow *window;
 

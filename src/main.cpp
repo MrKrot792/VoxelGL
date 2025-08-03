@@ -1,6 +1,6 @@
 #include "chunk.hpp"
 #include "glad/glad.h"
-#include "include/fps_count.hpp"
+#include "fps_count.hpp"
 #include "shader.hpp"
 #include "window.hpp"
 

@@ -3,3 +3,5 @@ compile_commands.json
 glprogram
 ./VoxelGL.tar.gz
 ./VoxelGL.tar
+build
+build-win
