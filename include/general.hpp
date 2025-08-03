@@ -64,6 +64,46 @@ inline std::vector<int> getDirection(Directions dir)
     return result;
 }
 
+inline std::vector<int> getUvCoordinates(Directions dir)
+{
+    std::vector<int> result;
+
+    switch (dir)
+    {
+    case Directions::FRONT:
+        result = {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0};
+        break;
+
+    case Directions::BACK:
+        result = {1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1};
+        break;
+
+    case Directions::RIGHT:
+        result = {0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1};
+        break;
+
+    case Directions::LEFT:
+        result = {
+            1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+        };
+        break;
+
+    case Directions::UP:
+        result = {
+            0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1,
+        };
+        break;
+
+    case Directions::DOWN:
+        result = {
+            0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0,
+        };
+        break;
+    }
+
+    return result;
+}
+
 inline void printVector(glm::vec3 vec)
 {
     std::cout << "[INFO] | " << "X: " << vec.x << ", Y: " << vec.y << ", Z:" << vec.z;
