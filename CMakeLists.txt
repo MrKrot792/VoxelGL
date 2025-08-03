@@ -4,10 +4,12 @@ project(VoxelGL)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(BUILD_SHARED_LIBS OFF)
+
 if(NOT CMAKE_BUILD_TYPE)
     set(default_build_type "Debug")
     message(STATUS "Set the build type to `${default_build_type}` as none was specified.")
-    set(CMAKE_BUILD_TYPE ${default_build_type} CACHE STRING "Chooce the build type." FORCE)
+    set(CMAKE_BUILD_TYPE ${default_build_type} CACHE STRING "Choose the build type." FORCE)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
@@ -16,7 +18,7 @@ message(STATUS "${PROJECT_NAME} Build Type: ${CMAKE_BUILD_TYPE}")
 set(Version_Major 0)
 set(Version_Minor 0)
 set(PROJECT_VERSION
-    "${myProject_Version_Major}.${myProject_Version_Minor}"
+    "${Version_Major}.${Version_Minor}"
 )
 message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
 
@@ -32,22 +34,21 @@ file(GLOB_RECURSE SRC_FILES
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-find_package(glfw3)
-if(glfw3_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows") # If linux, try finding all the libraries. If couldn't find them, compile from scratch.
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 else()
-    message("Could not find glfw, fallback to subproject")
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glfw/)
+    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
 endif()
 
-find_package(glm)
-if(glm_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE glm)
-else()
-    message("Could not find glm, fallback to subproject")
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glm)
-endif()
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm)
 
 find_package(OpenGL REQUIRED)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL glfw glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
