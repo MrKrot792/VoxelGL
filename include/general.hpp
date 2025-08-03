@@ -31,7 +31,12 @@ inline std::vector<int> getDirection(Directions dir)
     switch (dir)
     {
     case Directions::FRONT:
-        result = {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0};
+        result = {0, 1, 0,
+                  1, 0, 0,
+                  0, 0, 0,
+                  1, 1, 0,
+                  1, 0, 0,
+                  0, 1, 0};
         break;
 
     case Directions::BACK:
@@ -63,6 +68,8 @@ inline std::vector<int> getDirection(Directions dir)
 
     return result;
 }
+
+constexpr std::vector<int> uv = {0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1};
 
 inline void printVector(glm::vec3 vec)
 {
