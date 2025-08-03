@@ -36,8 +36,11 @@ int Window::Init()
     glfwMakeContextCurrent(Window::window);
 
     glfwSwapInterval(Window::vsync);
+
     glfwSetFramebufferSizeCallback(Window::window, Window::framebuffer_size_callback);
     glfwSetCursorPosCallback(Window::window, Window::mouse_callback);
+    glfwSetErrorCallback(Window::glfw_error_callback);
+
     glfwSetInputMode(Window::window, GLFW_CURSOR,
                      GLFW_CURSOR_DISABLED); // TODO: Remove this line, and move it to the class
 
@@ -57,8 +60,8 @@ void Window::windowHint(int hint, int value)
 
 void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
 {
-    std::cout << "[INFO] | " << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size." << " New size is: " << _width
-              << " X, " << _height << " Y" << std::endl;
+    std::cout << "[INFO] | " << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size."
+              << " New size is: " << _width << " X, " << _height << " Y" << std::endl;
     glViewport(0, 0, _width, _height);
 
     Window::width = _width;
@@ -89,4 +92,9 @@ void Window::terminate()
 int Window::getKey(int key)
 {
     return glfwGetKey(Window::window, key);
+}
+
+void Window::glfw_error_callback(int error, const char *description)
+{
+    std::cout << "[ERROR] | GLFW error happened: " << description << "\nError code: " << error << "\n";
 }

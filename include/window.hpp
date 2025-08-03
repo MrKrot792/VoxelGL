@@ -22,6 +22,7 @@ void windowHint(int hint, int value);
 
 void framebuffer_size_callback(GLFWwindow *window, int _width, int _height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+void glfw_error_callback(int error, const char *description);
 
 glm::vec2 getDimensions();
 
