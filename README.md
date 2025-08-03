@@ -1,3 +1,9 @@
+<div align = center>
+<img width="1920" height="1080" alt="2025-07-27T02:14:30,825112127+02:00" src="https://github.com/user-attachments/assets/a0b4e573-403d-465f-b088-3934bd188807" />
+<sub>v0.01</sub>
+
+</div>
+
 `VoxelGL` - Voxel Engine, writen with OpenGL
 
 # 1. How to build?
