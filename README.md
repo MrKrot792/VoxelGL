@@ -2,17 +2,26 @@
 
 # How to build?
 ### 1. On Linux:
-Simply clone the repo, and run `./buildR`. It will build everything.
-> [!IMPORTANT]
-> You should have installed `OpenGL`, `glm` and `GLFW`.
-
-> [!NOTE]
-> Later, these scripts will be removed and replaced with CMake. 
-
-Command to clone the repo:
+Clone the repo:
 ```
 git clone https://github.com/MrKrot792/VoxelGL
 ```
 
+Then, build with CMake:
+```
+mkdir build && cd build
+cmake ..
+make
+```
+
+To run:
+```
+cd .. # Going to VoxelGL root
+build/VoxelGL
+```
+
 ### 2. On windows:
-Later, when i figure out CMake, i'll make a guide how to build it.
+I'm not quite sure how CMake works on Windows.
+But no worries! Just download the latest release for Windows and enjoy!
+If you're brave enough, you can compile it yourself - all the libraries are in the `external` directory.
+Just run cmake with `-DCMAKE_TOOLCHAIN_FILE=../toolchain-mingw64.cmake`.
