@@ -25,6 +25,8 @@ int Window::Init()
 
     glfwWindowHint(GLFW_SAMPLES, Window::antialiasingLevel);
 
+    glfwSetErrorCallback(Window::glfw_error_callback);
+
     Window::window = glfwCreateWindow(Window::width, Window::height, "Learn OpenGL", NULL, NULL);
     if (Window::window == NULL)
     {
@@ -39,7 +41,6 @@ int Window::Init()
 
     glfwSetFramebufferSizeCallback(Window::window, Window::framebuffer_size_callback);
     glfwSetCursorPosCallback(Window::window, Window::mouse_callback);
-    glfwSetErrorCallback(Window::glfw_error_callback);
 
     glfwSetInputMode(Window::window, GLFW_CURSOR,
                      GLFW_CURSOR_DISABLED); // TODO: Remove this line, and move it to the class
@@ -96,5 +97,5 @@ int Window::getKey(int key)
 
 void Window::glfw_error_callback(int error, const char *description)
 {
-    std::cout << "[ERROR] | GLFW error happened: " << description << "\nError code: " << error << "\n";
+    std::cerr << "[ERROR] | GLFW error happened: " << description << "\nError code: " << error << "\n";
 }
