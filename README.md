@@ -9,19 +9,19 @@
 # 1. How to build?
 ## 1.1. On Linux:
 Clone the repo (and submodules):
-```
+``` bash
 git clone https://github.com/MrKrot792/VoxelGL --recurse-submodules
 ```
 
 Then, build with CMake:
-```
+``` bash
 mkdir build && cd build
 cmake ..
 make
 ```
 
 To run:
-```
+``` bash
 cd .. # Going to VoxelGL root
 build/VoxelGL
 ```
