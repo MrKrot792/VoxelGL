@@ -1,4 +1,5 @@
 #include "chunk.hpp"
+#include "block.hpp"
 #include "general.hpp"
 #include "shader.hpp"
 #include "generation.hpp"
@@ -7,6 +8,7 @@
 #include <cstdlib>
 #include <glm/fwd.hpp>
 #include <utility>
+
 
 Chunk::Chunk()
 {
@@ -30,7 +32,7 @@ Chunk::Chunk(glm::vec3 pos)
     glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
 }
 
-RESULT_CODE Chunk::setData(BlockData _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
+RESULT_CODE Chunk::setData(Block _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE])
 {
     for (int i = 0; i < CHUNK_SIZE; i++)
     {
@@ -47,7 +49,7 @@ RESULT_CODE Chunk::setData(BlockData _data[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE]
     return RESULT_CODE::CODE_NO_ERROR;
 }
 
-BlockData *Chunk::getData()
+Block *Chunk::getData()
 {
     return this->data;
 }
@@ -63,27 +65,27 @@ RESULT_CODE Chunk::genRenderData()
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
                 glm::vec3 positionR(k, j, i);
-                BlockData thisBlock = this->getBlockAtR(positionR);
+                Block thisBlock = this->getBlockAtR(positionR);
                 positionR += this->position;
 
-                if (thisBlock.type == AIR)
+                if (thisBlock == BlockTypes::getBlockByName("Air"))
                     continue;
 
-                BlockData xBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x + 1, positionR.y, positionR.z)),
+                Block xBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x + 1, positionR.y, positionR.z)),
                                        this->getBlockAtNR(glm::vec3(positionR.x - 1, positionR.y, positionR.z))};
-                BlockData yBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x, positionR.y + 1, positionR.z)),
+                Block yBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x, positionR.y + 1, positionR.z)),
                                        this->getBlockAtNR(glm::vec3(positionR.x, positionR.y - 1, positionR.z))};
-                BlockData zBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x, positionR.y, positionR.z + 1)),
+                Block zBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x, positionR.y, positionR.z + 1)),
                                        this->getBlockAtNR(glm::vec3(positionR.x, positionR.y, positionR.z - 1))};
 
-                std::vector<std::pair<BlockData, Direction>> a = {
+                std::vector<std::pair<Block, Direction>> a = {
                     {xBlock[1], getDirection(Directions::RIGHT)}, {xBlock[0], getDirection(Directions::LEFT)},
                     {yBlock[1], getDirection(Directions::DOWN)},  {yBlock[0], getDirection(Directions::UP)},
                     {zBlock[1], getDirection(Directions::FRONT)}, {zBlock[0], getDirection(Directions::BACK)}};
 
                 for (size_t v = 0; v < a.size(); v++)
                 {
-                    if (a.at(v).first.type == AIR)
+                    if (a.at(v).first == BlockTypes::getBlockByName("Air"))
                     {
                         for (size_t n = 0; n < a.at(v).second.size() / 3; n++)
                         {
@@ -106,7 +108,7 @@ RenderData Chunk::getRenderData()
     return this->renderData;
 }
 
-BlockData Chunk::getBlockAtR(glm::vec3 pos)
+Block Chunk::getBlockAtR(glm::vec3 pos)
 {
     // INEFFICIENT
     if (pos.x < 0 or pos.x >= CHUNK_SIZE)
@@ -127,7 +129,7 @@ BlockData Chunk::getBlockAtR(glm::vec3 pos)
     return data[(int)pos.x + (int)pos.y * CHUNK_SIZE + (int)pos.z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
-BlockData Chunk::getBlockAtNR(glm::vec3 pos)
+Block Chunk::getBlockAtNR(glm::vec3 pos)
 {
     // INEFFICIENT
     if (pos.x < 0 + position.x or pos.x >= CHUNK_SIZE + position.x)
@@ -176,3 +178,4 @@ RESULT_CODE Chunk::draw()
 
     return RESULT_CODE::CODE_NO_ERROR;
 }
+
