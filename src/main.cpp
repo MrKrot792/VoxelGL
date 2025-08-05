@@ -1,4 +1,6 @@
+#include "block.hpp"
 #include "chunk.hpp"
+#include "chunk_manager.hpp"
 #include "glad/glad.h"
 #include "fps_count.hpp"
 #include "shader.hpp"
@@ -56,7 +58,9 @@ int main(void)
 
     Shader shader("assets/shaders/vertex.vert", "assets/shaders/fragment.frag");
 
-    std::vector<Chunk> chunks;
+    BlockTypes::initialize();
+    
+    ChunkManager& chunkManager = ChunkManager::getInstance();
 
     int size = 8;
 
@@ -70,10 +74,11 @@ int main(void)
                 int y = j - size / 2;
                 int z = k - size / 2;
 
-                chunks.push_back(Chunk(glm::vec3(x * 16, y * 16, z * 16)));
+                chunkManager.addChunk(Chunk(glm::vec3(x * 16, y * 16, z * 16)));
             }
         }
     }
+    
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -90,6 +95,7 @@ int main(void)
 
     FPSCounter fps;
 
+    
     while (!Window::windowShouldClose())
     {
         fps.Start();
@@ -118,7 +124,7 @@ int main(void)
         shader.setMatrix4(std::string("projection"), projection);
         shader.setMatrix4(std::string("view"), view);
 
-        for (auto i : chunks)
+        for (auto i : chunkManager.chunks)
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             shader.setVec3(std::string("color"), glm::vec3(.5, .4, .2));
