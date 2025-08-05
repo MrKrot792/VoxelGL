@@ -1,9 +1,13 @@
 #include "chunk.hpp"
 #include "chunk_manager.hpp"
-#include "glad/glad.h"
 #include "fps_count.hpp"
+#include "glad/glad.h"
 #include "shader.hpp"
 #include "window.hpp"
+
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
 
 #include <GLFW/glfw3.h>
 
@@ -26,6 +30,7 @@
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
+void keyEsc();
 
 int width = 800;
 int height = 600;
@@ -43,6 +48,8 @@ double deltaTime = 0;
 
 unsigned int FPS = 0;
 
+bool isOn = false;
+
 int main(void)
 {
     Window::Init();
@@ -56,7 +63,7 @@ int main(void)
 
     Shader shader("assets/shaders/vertex.vert", "assets/shaders/fragment.frag");
 
-    ChunkManager& chunkManager = ChunkManager::getInstance();
+    ChunkManager &chunkManager = ChunkManager::getInstance();
 
     int size = 8;
 
@@ -74,7 +81,6 @@ int main(void)
             }
         }
     }
-    
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
@@ -91,11 +97,32 @@ int main(void)
 
     FPSCounter fps;
 
-    
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(
+        Window::window,
+        true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    ImGui_ImplOpenGL3_Init();
+
     while (!Window::windowShouldClose())
     {
         fps.Start();
         processInput(Window::window);
+        Window::pollEvents();
+
+        // (Your code calls glfwPollEvents())
+        // ...
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::ShowDemoWindow(); // Show demo window! :)
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -131,8 +158,10 @@ int main(void)
             i.draw();
         }
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         Window::swapBuffers();
-        Window::pollEvents();
         fps.End();
         deltaTime = fps.GetDelta();
 
@@ -142,15 +171,59 @@ int main(void)
         FPS = fps.GetFPS();
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     Window::terminate();
     return 0;
 }
 
+enum STATE
+{
+    JUST_PRESSED,
+    JUST_RELEASED,
+    NONE,
+};
+
+int key = 0;
+int state = 0;
+
 void processInput(GLFWwindow *window)
 {
-    if (Window::getKey(GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    // TODO: Abstract into a class
+    int newKey = Window::getKey(GLFW_KEY_ESCAPE);
+    if (key == newKey)
     {
-        glfwSetWindowShouldClose(window, true);
+        state = STATE::NONE;
+    }
+    else if (key != newKey)
+    {
+        if (key == 0 && newKey == 1)
+        {
+            state = STATE::JUST_PRESSED;
+        }
+
+        else if (key == 1 && newKey == 0)
+        {
+            state = STATE::JUST_RELEASED;
+        }
+    }
+
+    key = newKey;
+
+    switch (state)
+    {
+    case STATE::NONE:
+        std::cout << "None" << "\n";
+        break;
+    case STATE::JUST_RELEASED:
+        std::cout << "Just released" << "\n";
+        break;
+    case STATE::JUST_PRESSED:
+        std::cout << "Just pressed" << "\n";
+        keyEsc();
+        break;
     }
 
     if (Window::getKey(GLFW_KEY_H) == GLFW_PRESS)
@@ -218,36 +291,54 @@ void processInput(GLFWwindow *window)
 
 void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
-    if (firstMouse)
+    if (!isOn)
     {
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
+
+        float sensitivity = 0.1f;
+
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        yaw += xoffset;
+        pitch += yoffset;
+
+        if (pitch > 89.0f)
+            pitch = 89.0f;
+        if (pitch < -89.0f)
+            pitch = -89.0f;
+
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+        cameraFront = glm::normalize(direction);
     }
+}
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
+void keyEsc()
+{
 
-    lastX = xpos;
-    lastY = ypos;
-
-    float sensitivity = 0.1f;
-
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw += xoffset;
-    pitch += yoffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-    cameraFront = glm::normalize(direction);
+    if (isOn)
+    {
+        isOn = false;
+        Window::setMouseInputMode(GLFW_CURSOR_DISABLED);
+    }
+    else
+    {
+        isOn = true;
+        Window::setMouseInputMode(GLFW_CURSOR_NORMAL);
+    }
 }

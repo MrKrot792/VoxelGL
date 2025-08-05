@@ -42,8 +42,7 @@ int Window::Init()
     glfwSetFramebufferSizeCallback(Window::window, Window::framebuffer_size_callback);
     glfwSetCursorPosCallback(Window::window, Window::mouse_callback);
 
-    glfwSetInputMode(Window::window, GLFW_CURSOR,
-                     GLFW_CURSOR_DISABLED); // TODO: Remove this line, and move it to the class
+    Window::setMouseInputMode(GLFW_CURSOR_DISABLED);
 
     return 0;
 }
@@ -98,4 +97,10 @@ int Window::getKey(int key)
 void Window::glfw_error_callback(int error, const char *description)
 {
     std::cerr << "[ERROR] | GLFW error happened: " << description << "\nError code: " << error << "\n";
+}
+
+void Window::setMouseInputMode(int value)
+{
+    glfwSetInputMode(Window::window, GLFW_CURSOR,
+                     value); // TODO: Remove this line, and move it to the class
 }
