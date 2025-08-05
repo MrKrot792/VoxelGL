@@ -68,7 +68,7 @@ RESULT_CODE Chunk::genRenderData()
                 Block thisBlock = this->getBlockAtR(positionR);
                 positionR += this->position;
 
-                if (thisBlock == BlockTypes::getBlockByName("Air"))
+                if (thisBlock == BlockTypes::getBlockById(BLOCK::AIR))
                     continue;
 
                 Block xBlock[2] = {this->getBlockAtNR(glm::vec3(positionR.x + 1, positionR.y, positionR.z)),
@@ -85,7 +85,7 @@ RESULT_CODE Chunk::genRenderData()
 
                 for (size_t v = 0; v < a.size(); v++)
                 {
-                    if (a.at(v).first == BlockTypes::getBlockByName("Air"))
+                    if (a.at(v).first == BlockTypes::getBlockById(BLOCK::AIR))
                     {
                         for (size_t n = 0; n < a.at(v).second.size() / 3; n++)
                         {

@@ -1,5 +1,25 @@
 #include "block.hpp" 
 
-std::unordered_map<size_t, Block> BlockTypes::blocksById{};
-std::unordered_map<std::string, Block> BlockTypes::blocksByName{};
-size_t BlockTypes::nextId = 0;
+Block BlockTypes::getBlockById(const BLOCK id)
+{
+    Block result = Block();
+    switch (id)
+    {
+    case BLOCK::AIR:
+        result = Block("Air", true);
+        break;
+
+    case BLOCK::DIRT:
+        result = Block("Dirt");
+        break;
+
+    case BLOCK::GRASS:
+        result = Block("Grass");
+        break;
+
+    case BLOCK::NO_BLOCK:
+        result = Block();
+        break;
+    }
+    return result;
+}

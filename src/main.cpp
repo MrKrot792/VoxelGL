@@ -1,4 +1,3 @@
-#include "block.hpp"
 #include "chunk.hpp"
 #include "chunk_manager.hpp"
 #include "glad/glad.h"
@@ -24,7 +23,6 @@
 #include <iostream>
 #include <ostream>
 #include <string>
-#include <vector>
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
@@ -58,8 +56,6 @@ int main(void)
 
     Shader shader("assets/shaders/vertex.vert", "assets/shaders/fragment.frag");
 
-    BlockTypes::initialize();
-    
     ChunkManager& chunkManager = ChunkManager::getInstance();
 
     int size = 8;

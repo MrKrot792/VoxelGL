@@ -16,10 +16,10 @@ inline Block genBlockAt(glm::ivec3 at)
     FastNoiseLite noise;
     noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
 
-    Block result = BlockTypes::getBlockById(static_cast<size_t>(BLOCK::DIRT));
+    Block result = BlockTypes::getBlockById(BLOCK::DIRT);
 
     if(at.y >= pow(noise.GetNoise((float)at.x, (float)at.z) * 4.f, 2))
-        result = BlockTypes::getBlockById(static_cast<size_t>(BLOCK::AIR));
+        result = BlockTypes::getBlockById(BLOCK::AIR);
 
     return result;
 }
