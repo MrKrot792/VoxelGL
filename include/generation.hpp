@@ -15,18 +15,26 @@ enum GENERATION_ALGORITHM
     CELLULAR,
 };
 
-constexpr GENERATION_ALGORITHM currentAlgorithm = SIMPLEX;
+constexpr GENERATION_ALGORITHM currentAlgorithm = CELLULAR;
 
 inline Block genBlockAt(glm::ivec3 at)
 {
-    // INEFFICIENT
+    float power = 2.f;
+    float amplitude = 4.f;
+
     FastNoiseLite noise;
     if (currentAlgorithm == SIMPLEX)
     {
+        power = 2.f;
+        amplitude = 4.f;
+
         noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
     }
     else if (currentAlgorithm == CELLULAR)
     {
+        power = 6.f;
+        amplitude = 2.f;
+
         noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Cellular);
 
         noise.SetFrequency(0.015);
@@ -44,7 +52,7 @@ inline Block genBlockAt(glm::ivec3 at)
 
     Block result = BlockTypes::getBlockById(BLOCK::DIRT);
 
-    if (at.y >= pow(noise.GetNoise((float)at.x, (float)at.z) * 2.f, 6))
+    if (at.y >= pow(noise.GetNoise((float)at.x, (float)at.z) * amplitude, power))
         result = BlockTypes::getBlockById(BLOCK::AIR);
 
     return result;
