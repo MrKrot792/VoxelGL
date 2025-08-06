@@ -28,13 +28,13 @@ uint32_t FPSCounter::GetFPS()
     return old_frame_count;
 }
 
-float FPSCounter::GetMediumFPS()
+double FPSCounter::GetMediumFPS()
 {
     double difference = this->GetDelta();
     return 1.0 / difference;
 }
 
-float FPSCounter::GetDelta()
+double FPSCounter::GetDelta()
 {
     double difference = this->end - this->start;
     return difference;

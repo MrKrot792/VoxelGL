@@ -105,9 +105,7 @@ int main(void)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(
-        Window::window,
-        true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    ImGui_ImplGlfw_InitForOpenGL(Window::window, true);
     ImGui_ImplOpenGL3_Init();
 
     while (!Window::windowShouldClose())
@@ -116,13 +114,37 @@ int main(void)
         processInput(Window::window);
         Window::pollEvents();
 
-        // (Your code calls glfwPollEvents())
-        // ...
-        // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImGui::ShowDemoWindow(); // Show demo window! :)
+
+        // IMGUI WINDOW BEGINS HERE
+        ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Once);
+        ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Once);
+
+        ImGui::Begin("Debug information\n");
+
+        ImGui::SeparatorText("Position:");
+        ImGui::Text("X: (%f)", cameraPos.x);
+        ImGui::Text("Y: (%f)", cameraPos.y);
+        ImGui::Text("Z: (%f)", cameraPos.z);
+
+        ImGui::SeparatorText("Pointing to:");
+        ImGui::Text("X: (%f)", cameraFront.x);
+        ImGui::Text("Y: (%f)", cameraFront.y);
+        ImGui::Text("Z: (%f)", cameraFront.z);
+
+        ImGui::SeparatorText("Rotation:");
+        ImGui::Text("Pitch: (%f)", pitch);
+        ImGui::Text("Yaw: (%f)", yaw);
+
+        ImGui::SeparatorText("FPS stuff:");
+        ImGui::Text("Delta: (%f)", fps.GetDelta());
+        ImGui::Text("FPS: (%d)", FPS);
+        ImGui::Text("Medium FPS: (%f)", fps.GetMediumFPS());
+
+        ImGui::End();
+        // AND ENDS HERE
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -131,17 +153,17 @@ int main(void)
 
         // 3D stuff
         // Matrices creation
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        // glm::vec3 direction;
+        // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        // direction.y = sin(glm::radians(pitch));
+        // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
         glm::mat4 projection;
         glm::vec2 dimensions = Window::getDimensions();
         projection = glm::perspective(glm::radians(90.0f), dimensions.x / dimensions.y, 0.1f, 1000.f);
 
         glm::mat4 view;
-        view = glm::lookAt(cameraPos, cameraPos + glm::normalize(direction), cameraUp);
+        view = glm::lookAt(cameraPos, cameraPos + glm::normalize(cameraFront), cameraUp);
 
         // Sending them to GPU
         shader.setMatrix4(std::string("projection"), projection);
@@ -212,19 +234,8 @@ void processInput(GLFWwindow *window)
 
     key = newKey;
 
-    switch (state)
-    {
-    case STATE::NONE:
-        std::cout << "None" << "\n";
-        break;
-    case STATE::JUST_RELEASED:
-        std::cout << "Just released" << "\n";
-        break;
-    case STATE::JUST_PRESSED:
-        std::cout << "Just pressed" << "\n";
+    if(state == STATE::JUST_PRESSED)
         keyEsc();
-        break;
-    }
 
     if (Window::getKey(GLFW_KEY_H) == GLFW_PRESS)
     {
@@ -314,10 +325,10 @@ void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
         yaw += xoffset;
         pitch += yoffset;
 
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
+        if (pitch > 89.99f)
+            pitch = 89.99f;
+        if (pitch < -89.99f)
+            pitch = -89.99f;
 
         glm::vec3 direction;
         direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));

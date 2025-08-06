@@ -19,6 +19,6 @@ class FPSCounter
     void End();
 
     uint32_t GetFPS();    // Every 1 second
-    float GetMediumFPS(); // Every frame
-    float GetDelta();     // Get frame difference
+    double GetMediumFPS(); // Every frame
+    double GetDelta();     // Get frame difference
 };
