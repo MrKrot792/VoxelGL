@@ -2,6 +2,7 @@
 #include "chunk_manager.hpp"
 #include "fps_count.hpp"
 #include "glad/glad.h"
+#include "log.hpp"
 #include "shader.hpp"
 #include "window.hpp"
 
@@ -24,8 +25,6 @@
 #include <glm/trigonometric.hpp>
 
 // std
-#include <iostream>
-#include <ostream>
 #include <string>
 
 void processInput(GLFWwindow *window);
@@ -57,7 +56,7 @@ int main(void)
     // GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "[ERROR] | Failed to initialize GLAD" << std::endl;
+        Log::log(Log::LogLevel::ERROR, "Failed to initialize GLAD");
         return -1;
     }
 
@@ -119,7 +118,7 @@ int main(void)
         ImGui::NewFrame();
 
         // IMGUI WINDOW BEGINS HERE
-        ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Once);
         ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Once);
 
         ImGui::Begin("Debug information\n");
@@ -139,9 +138,11 @@ int main(void)
         ImGui::Text("Yaw: (%f)", yaw);
 
         ImGui::SeparatorText("FPS stuff:");
-        ImGui::Text("Delta: (%f)", fps.GetDelta());
+        //ImGui::Text("Delta: (%f)", fps.GetDelta());
+        ImGui::Text("Delta: (%s)", "CURRENTLY NOT WORKING");
         ImGui::Text("FPS: (%d)", FPS);
-        ImGui::Text("Medium FPS: (%f)", fps.GetMediumFPS());
+        // ImGui::Text("Medium FPS: (%f) ", fps.GetMediumFPS());
+        ImGui::Text("Medium FPS: (%s) ", "CURRENTLY NOT WORKING");
 
         ImGui::End();
         // AND ENDS HERE
@@ -187,8 +188,10 @@ int main(void)
         fps.End();
         deltaTime = fps.GetDelta();
 
-        if (fps.GetFPS() != FPS)
-            std::cout << "[INFO] | FPS: " << fps.GetFPS() << std::endl;
+        auto newFps = fps.GetFPS();
+
+        if (newFps != FPS)
+            Log::logWithValue(Log::LogLevel::INFO, "FPS", std::to_string(newFps));
 
         FPS = fps.GetFPS();
     }
@@ -234,7 +237,7 @@ void processInput(GLFWwindow *window)
 
     key = newKey;
 
-    if(state == STATE::JUST_PRESSED)
+    if (state == STATE::JUST_PRESSED)
         keyEsc();
 
     if (Window::getKey(GLFW_KEY_H) == GLFW_PRESS)
@@ -265,7 +268,7 @@ void processInput(GLFWwindow *window)
             break;
         }
 
-        std::cout << "[INFO] | Error: " << error << std::endl;
+        Log::logWithValue(Log::LogLevel::WARNING, "Error", error);
     }
 
     float cameraSpeed = 5.f * deltaTime; // adjust accordingly

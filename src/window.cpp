@@ -1,11 +1,13 @@
 #include "window.hpp"
-#include <GLFW/glfw3.h>
+#include "log.hpp"
 
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 // std
 #include <cstdio>
 #include <iostream>
+#include <string>
 #include <sys/types.h>
 
 int Window::Init()
@@ -60,8 +62,9 @@ void Window::windowHint(int hint, int value)
 
 void Window::framebuffer_size_callback(GLFWwindow *window, int _width, int _height)
 {
-    std::cout << "[INFO] | " << "Changed \'" << glfwGetWindowTitle(window) << "\' window's size."
-              << " New size is: " << _width << " X, " << _height << " Y" << std::endl;
+    Log::logWithValue(Log::LogLevel::INFO, std::string("Changed \'") + glfwGetWindowTitle(window) + "\' window's size.",
+                      std::string("New size is: ") + std::to_string(_width) + " X, " + std::to_string(_height) + " Y");
+
     glViewport(0, 0, _width, _height);
 
     Window::width = _width;
@@ -96,7 +99,8 @@ int Window::getKey(int key)
 
 void Window::glfw_error_callback(int error, const char *description)
 {
-    std::cerr << "[ERROR] | GLFW error happened: " << description << "\nError code: " << error << "\n";
+    Log::logWithValue(Log::LogLevel::ERROR, "GLFW error happened",
+                      std::string("Description") + description + std::string("Error code: ") + std::to_string(error));
 }
 
 void Window::setMouseInputMode(int value)

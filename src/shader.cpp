@@ -1,9 +1,13 @@
 #include "shader.hpp"
+#include "log.hpp"
 
-#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
+
+// std
+#include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 Shader::Shader(const char *vertexPath, const char *fragmentPath)
 {
@@ -33,7 +37,7 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     }
     catch (std::ifstream::failure e)
     {
-        std::cout << "[ERROR] | Shader file not successfully read! | " << std::endl;
+        Log::log(Log::LogLevel::ERROR, "Shader file not successfully read!");
     }
     const char *vShaderCode = vertexCode.c_str();
     const char *fShaderCode = fragmentCode.c_str();
@@ -51,7 +55,7 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-        std::cout << "[ERROR] | Vertex shader file not successfully read! | " << infoLog << std::endl;
+        Log::logWithValue(Log::LogLevel::ERROR, "Vertex shader file not successfully read!", infoLog);
     };
 
     // fragment shader
@@ -62,8 +66,8 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
     if (!success)
     {
-        glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-        std::cout << "[ERROR] | Vertex shader file not successfully read! | " << infoLog << std::endl;
+        glGetShaderInfoLog(fragment, 512, NULL, infoLog);
+        Log::logWithValue(Log::LogLevel::ERROR, "Fragment shader file not successfully read!", infoLog);
     };
 
     ID = glCreateProgram();
@@ -75,7 +79,7 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     if (!success)
     {
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
-        std::cout << "[ERROR] | Shader linking failed! | " << infoLog << std::endl;
+        Log::logWithValue(Log::LogLevel::ERROR, "Shade linking failed!", infoLog);
     }
     // delete shaders; they’re linked into our program and no longer necessary
     glDeleteShader(vertex);
@@ -109,5 +113,5 @@ void Shader::setMatrix4(const std::string &name, const glm::mat4 &value) const
 
 void Shader::setVec3(const std::string &name, const glm::vec3 &value) const
 {
-    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);   
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
 }
