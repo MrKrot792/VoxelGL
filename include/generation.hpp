@@ -16,12 +16,14 @@ enum GENERATION_ALGORITHM
     CRATERS,
 };
 
-constexpr GENERATION_ALGORITHM currentAlgorithm = CELLULAR;
+constexpr GENERATION_ALGORITHM currentAlgorithm = CRATERS;
 
 inline Block genBlockAt(glm::ivec3 at)
 {
     float power = 2.f;
     float amplitude = 4.f;
+
+    float height = 0.f;
 
     FastNoiseLite noise;
     if (currentAlgorithm == SIMPLEX)
@@ -30,6 +32,8 @@ inline Block genBlockAt(glm::ivec3 at)
         amplitude = 4.f;
 
         noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+
+        height = pow(noise.GetNoise((float)at.x, (float)at.z) * amplitude, power);
     }
     else if (currentAlgorithm == CELLULAR)
     {
@@ -49,6 +53,8 @@ inline Block genBlockAt(glm::ivec3 at)
             FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_EuclideanSq);
         noise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance);
         noise.SetCellularJitter(1.710);
+
+        height = pow(noise.GetNoise((float)at.x, (float)at.z) * amplitude, power);
     }
     else if (currentAlgorithm == CRATERS)
     {
@@ -66,11 +72,13 @@ inline Block genBlockAt(glm::ivec3 at)
         noise.SetCellularDistanceFunction(
             FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_EuclideanSq);
         noise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance2Div);
+
+        height = -pow(noise.GetNoise((float)at.x, (float)at.z) * amplitude, power);
     }
 
     Block result = BlockTypes::getBlockById(BLOCK::DIRT);
 
-    if (at.y >= pow(noise.GetNoise((float)at.x, (float)at.z) * amplitude, power))
+    if (at.y >= height)
         result = BlockTypes::getBlockById(BLOCK::AIR);
 
     return result;
