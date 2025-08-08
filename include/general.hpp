@@ -70,8 +70,3 @@ inline std::vector<int> getDirection(Directions dir)
 }
 
 const std::vector<int> uv = {0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1};
-
-inline void printVector(glm::vec3 vec)
-{
-    std::cout << "[INFO] | " << "X: " << vec.x << ", Y: " << vec.y << ", Z:" << vec.z;
-}
