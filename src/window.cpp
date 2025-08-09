@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include "input.hpp"
 #include "log.hpp"
 
 #include <GLFW/glfw3.h>
@@ -43,6 +44,8 @@ int Window::Init()
 
     glfwSetFramebufferSizeCallback(Window::window, Window::framebuffer_size_callback);
     glfwSetCursorPosCallback(Window::window, Window::mouse_callback);
+
+    glfwSetKeyCallback(Window::window, Input::input);
 
     Window::setMouseInputMode(GLFW_CURSOR_DISABLED);
 
@@ -107,4 +110,46 @@ void Window::setMouseInputMode(int value)
 {
     glfwSetInputMode(Window::window, GLFW_CURSOR,
                      value); // TODO: Remove this line, and move it to the class
+}
+
+void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    /*
+    if (!isOn)
+    {
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+
+        lastX = xpos;
+        lastY = ypos;
+
+        float sensitivity = 0.1f;
+
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        yaw += xoffset;
+        pitch += yoffset;
+
+        if (pitch > 89.99f)
+            pitch = 89.99f;
+        if (pitch < -89.99f)
+            pitch = -89.99f;
+
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+        cameraFront = glm::normalize(direction);
+    }
+    */
+    Log::log(Log::LogLevel::INFO, "Mouse.");
 }

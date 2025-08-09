@@ -2,6 +2,7 @@
 #include "chunk_manager.hpp"
 #include "fps_count.hpp"
 #include "glad/glad.h"
+#include "input.hpp"
 #include "log.hpp"
 #include "shader.hpp"
 #include "ui.hpp"
@@ -60,8 +61,10 @@ int main(void)
         return -1;
     }
 
+    // Only one shader
     Shader shader("assets/shaders/vertex.vert", "assets/shaders/fragment.frag");
 
+    // Chunk creation
     ChunkManager &chunkManager = ChunkManager::getInstance();
 
     int size = 8;
@@ -103,7 +106,6 @@ int main(void)
         ZoneScopedC(0xff00ff);
         FrameMarkStart("Main");
         fps.Start();
-        processInput(Window::window);
         Window::pollEvents();
 
         UI::draw(cameraPos, cameraFront, FPS, pitch, yaw);
@@ -157,11 +159,13 @@ int main(void)
     return 0;
 }
 
+/*
 enum STATE
 {
     JUST_PRESSED,
     JUST_RELEASED,
-    NONE,
+    PRESSED,
+    RELEASED
 };
 
 int key = 0;
@@ -173,7 +177,8 @@ void processInput(GLFWwindow *window)
     int newKey = Window::getKey(GLFW_KEY_ESCAPE);
     if (key == newKey)
     {
-        state = STATE::NONE;
+        state = (newKey == GLFW_PRESS) ? STATE::PRESSED : STATE::RELEASED;
+        Log::log(Log::LogLevel::INFO, std::to_string(state));
     }
     else if (key != newKey)
     {
@@ -192,6 +197,22 @@ void processInput(GLFWwindow *window)
 
     if (state == STATE::JUST_PRESSED)
         keyEsc();
+
+    switch (state)
+    {
+    case STATE::JUST_PRESSED:
+        Log::log(Log::LogLevel::WARNING, "Just pressed");
+        break;
+    case STATE::JUST_RELEASED:
+        Log::log(Log::LogLevel::WARNING, "Just released");
+        break;
+    case STATE::PRESSED:
+        Log::log(Log::LogLevel::WARNING, "Pressed");
+        break;
+    case STATE::RELEASED:
+        Log::log(Log::LogLevel::WARNING, "Released");
+        break;
+    }
 
     if (Window::getKey(GLFW_KEY_H) == GLFW_PRESS)
     {
@@ -256,44 +277,6 @@ void processInput(GLFWwindow *window)
         cameraPos -= -cameraRight * cameraSpeed;
 }
 
-void Window::mouse_callback(GLFWwindow *window, double xpos, double ypos)
-{
-    if (!isOn)
-    {
-        if (firstMouse)
-        {
-            lastX = xpos;
-            lastY = ypos;
-            firstMouse = false;
-        }
-
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
-
-        lastX = xpos;
-        lastY = ypos;
-
-        float sensitivity = 0.1f;
-
-        xoffset *= sensitivity;
-        yoffset *= sensitivity;
-
-        yaw += xoffset;
-        pitch += yoffset;
-
-        if (pitch > 89.99f)
-            pitch = 89.99f;
-        if (pitch < -89.99f)
-            pitch = -89.99f;
-
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-        cameraFront = glm::normalize(direction);
-    }
-}
 
 void keyEsc()
 {
@@ -309,3 +292,4 @@ void keyEsc()
         Window::setMouseInputMode(GLFW_CURSOR_NORMAL);
     }
 }
+*/
