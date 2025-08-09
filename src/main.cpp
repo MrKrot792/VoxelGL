@@ -26,6 +26,8 @@
 
 // std
 #include <string>
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
@@ -51,6 +53,8 @@ bool isOn = false;
 
 int main(void)
 {
+    ZoneScoped;
+
     Window::Init();
 
     // GLAD
@@ -109,6 +113,8 @@ int main(void)
 
     while (!Window::windowShouldClose())
     {
+        ZoneScopedC(0xff00ff);
+        FrameMarkStart("Main");
         fps.Start();
         processInput(Window::window);
         Window::pollEvents();
@@ -194,6 +200,7 @@ int main(void)
             Log::logWithValue(Log::LogLevel::INFO, "FPS", std::to_string(newFps));
 
         FPS = fps.GetFPS();
+        FrameMarkEnd("Main");
     }
 
     ImGui_ImplOpenGL3_Shutdown();

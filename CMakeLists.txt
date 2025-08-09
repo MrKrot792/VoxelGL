@@ -10,6 +10,8 @@ set(BUILD_SHARED_LIBS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option( TRACY_ENABLE "" ON)
+
 if(NOT CMAKE_BUILD_TYPE)
     set(default_build_type "Debug")
     message(STATUS "Set the build type to `${default_build_type}` as none was specified.")
@@ -29,6 +31,7 @@ message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/lib)
 include_directories(${PROJECT_SOURCE_DIR}/lib/imgui)
+include_directories(${PROJECT_SOURCE_DIR}./external/tracy/public/tracy)
 
 file(GLOB_RECURSE SRC_FILES
     ${PROJECT_SOURCE_DIR}/src/*.cpp
@@ -37,7 +40,7 @@ file(GLOB_RECURSE SRC_FILES
     ${PROJECT_SOURCE_DIR}/lib/*.c
 )
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME} ${SRC_FILES} external/tracy/public/TracyClient.cpp)
 
 if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows") # If linux, try finding all the libraries. If couldn't find them, compile from scratch.
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
@@ -54,6 +57,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/tracy/)
+target_link_libraries(${PROJECT_NAME} PRIVATE Tracy::TracyClient)
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)

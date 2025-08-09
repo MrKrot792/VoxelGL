@@ -4,6 +4,8 @@
 #include "shader.hpp"
 #include "generation.hpp"
 
+#include "tracy/Tracy.hpp"
+
 #include <cstddef>
 #include <cstdlib>
 #include <glm/fwd.hpp>
@@ -171,6 +173,7 @@ RESULT_CODE Chunk::genData()
 
 RESULT_CODE Chunk::draw()
 {
+    ZoneScoped;
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
     glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 3, (void *)0);
     glBufferData(GL_ARRAY_BUFFER, this->renderData.size(), this->renderData.data(), GL_DYNAMIC_DRAW);
