@@ -14,6 +14,7 @@
 
 Chunk::Chunk()
 {
+    ZoneScoped;
     this->genData();
     this->genRenderData();
 
@@ -24,6 +25,7 @@ Chunk::Chunk()
 
 Chunk::Chunk(glm::vec3 pos)
 {
+    ZoneScoped;
     this->position = pos;
 
     this->genData();

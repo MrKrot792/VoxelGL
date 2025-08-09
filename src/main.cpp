@@ -4,11 +4,8 @@
 #include "glad/glad.h"
 #include "log.hpp"
 #include "shader.hpp"
+#include "ui.hpp"
 #include "window.hpp"
-
-#include "imgui/backends/imgui_impl_glfw.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
-#include "imgui/imgui.h"
 
 #include <GLFW/glfw3.h>
 
@@ -25,9 +22,8 @@
 #include <glm/trigonometric.hpp>
 
 // std
-#include <string>
 #include "tracy/Tracy.hpp"
-#include "tracy/TracyOpenGL.hpp"
+#include <string>
 
 void processInput(GLFWwindow *window);
 void printMatrix(glm::mat4 matrix);
@@ -100,16 +96,7 @@ int main(void)
 
     FPSCounter fps;
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(Window::window, true);
-    ImGui_ImplOpenGL3_Init();
+    UI::initialize(Window::window);
 
     while (!Window::windowShouldClose())
     {
@@ -119,39 +106,7 @@ int main(void)
         processInput(Window::window);
         Window::pollEvents();
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // IMGUI WINDOW BEGINS HERE
-        ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Once);
-        ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Once);
-
-        ImGui::Begin("Debug information\n");
-
-        ImGui::SeparatorText("Position:");
-        ImGui::Text("X: (%f)", cameraPos.x);
-        ImGui::Text("Y: (%f)", cameraPos.y);
-        ImGui::Text("Z: (%f)", cameraPos.z);
-
-        ImGui::SeparatorText("Pointing to:");
-        ImGui::Text("X: (%f)", cameraFront.x);
-        ImGui::Text("Y: (%f)", cameraFront.y);
-        ImGui::Text("Z: (%f)", cameraFront.z);
-
-        ImGui::SeparatorText("Rotation:");
-        ImGui::Text("Pitch: (%f)", pitch);
-        ImGui::Text("Yaw: (%f)", yaw);
-
-        ImGui::SeparatorText("FPS stuff:");
-        //ImGui::Text("Delta: (%f)", fps.GetDelta());
-        ImGui::Text("Delta: (%s)", "CURRENTLY NOT WORKING");
-        ImGui::Text("FPS: (%d)", FPS);
-        // ImGui::Text("Medium FPS: (%f) ", fps.GetMediumFPS());
-        ImGui::Text("Medium FPS: (%s) ", "CURRENTLY NOT WORKING");
-
-        ImGui::End();
-        // AND ENDS HERE
+        UI::draw(cameraPos, cameraFront, FPS, pitch, yaw);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -160,11 +115,6 @@ int main(void)
 
         // 3D stuff
         // Matrices creation
-        // glm::vec3 direction;
-        // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        // direction.y = sin(glm::radians(pitch));
-        // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
         glm::mat4 projection;
         glm::vec2 dimensions = Window::getDimensions();
         projection = glm::perspective(glm::radians(90.0f), dimensions.x / dimensions.y, 0.1f, 1000.f);
@@ -187,8 +137,7 @@ int main(void)
             i.draw();
         }
 
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        UI::render();
 
         Window::swapBuffers();
         fps.End();
@@ -203,10 +152,7 @@ int main(void)
         FrameMarkEnd("Main");
     }
 
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
+    UI::destroy();
     Window::terminate();
     return 0;
 }
