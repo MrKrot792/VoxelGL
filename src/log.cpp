@@ -26,6 +26,9 @@ void Log::log(Log::LogLevel level, const std::string message)
     case Log::LogLevel::ERROR:
         prefix = "\033[31m[ERROR]\033[0m";
         break;
+    case Log::LogLevel::MESSAGE:
+        prefix = "\033[33m[MESSAGE]\033[0m";
+        break;
     }
 
     std::cout << prefix << " | " << Log::getTimeStamp() << " | " << message << "\n";
@@ -45,6 +48,9 @@ void Log::logWithValue(Log::LogLevel level, const std::string message, std::stri
         break;
     case Log::LogLevel::ERROR:
         prefix = "\033[31m[ERROR]\033[0m";
+        break;
+    case Log::LogLevel::MESSAGE:
+        prefix = "\033[32m[MESSAGE]\033[0m";
         break;
     }
 
