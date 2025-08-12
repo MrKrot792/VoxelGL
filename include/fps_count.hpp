@@ -6,19 +6,23 @@
 class FPSCounter
 {
   private:
-    double start = 0;
-    double end = 0;
+    static double start;
+    static double end;
 
-    uint32_t frame_count = 0;
-    uint32_t old_frame_count = 0;
+    static double seconds_count;
 
-    double seconds_count = 0;
+    static uint32_t frame_count;
+    static uint32_t old_frame_count;
 
   public:
-    void Start();
-    void End();
+    FPSCounter() = delete;
+    FPSCounter(const FPSCounter &) = delete;
+    FPSCounter &operator=(const FPSCounter &) = delete;
 
-    uint32_t GetFPS();    // Every 1 second
-    double GetMediumFPS(); // Every frame
-    double GetDelta();     // Get frame difference
+    static void Start();
+    static void End();
+
+    static uint32_t GetFPS();     // Every 1 second
+    static double GetMediumFPS(); // Every frame
+    static double GetDelta();     // Get frame difference
 };
