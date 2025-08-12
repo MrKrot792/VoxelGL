@@ -7,7 +7,7 @@
 namespace UI
 {
 void init(GLFWwindow *win);
-void draw(glm::vec3 cameraPos, glm::vec3 cameraFront, uint FPS, float pitch, float yaw);
+void draw(glm::vec3 cameraPos, glm::vec3 cameraFront, float pitch, float yaw);
 void render();
 void destroy();
 }; // namespace UI

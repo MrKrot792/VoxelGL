@@ -1,5 +1,6 @@
 #include "ui.hpp"
 
+#include "fps_count.hpp"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "imgui/imgui.h"
@@ -22,7 +23,7 @@ void UI::init(GLFWwindow *win)
     ImGui_ImplOpenGL3_Init();
 }
 
-void UI::draw(glm::vec3 cameraPos, glm::vec3 cameraFront, uint FPS, float pitch, float yaw)
+void UI::draw(glm::vec3 cameraPos, glm::vec3 cameraFront, float pitch, float yaw)
 {
     ZoneScopedC(0x00ff00);
     ImGui_ImplOpenGL3_NewFrame();
@@ -50,11 +51,9 @@ void UI::draw(glm::vec3 cameraPos, glm::vec3 cameraFront, uint FPS, float pitch,
     ImGui::Text("Yaw: (%f)", yaw);
 
     ImGui::SeparatorText("FPS stuff:");
-    // ImGui::Text("Delta: (%f)", fps.GetDelta());
-    ImGui::Text("Delta: (%s)", "CURRENTLY NOT WORKING");
-    ImGui::Text("FPS: (%d)", FPS);
-    // ImGui::Text("Medium FPS: (%f) ", fps.GetMediumFPS());
-    ImGui::Text("Medium FPS: (%s) ", "CURRENTLY NOT WORKING");
+    ImGui::Text("Delta: (%f)", FPSCounter::GetDelta());
+    ImGui::Text("FPS: (%d)", FPSCounter::GetFPS());
+    ImGui::Text("Medium FPS: (%f) ", FPSCounter::GetMediumFPS());
 
     ImGui::End();
     // AND ENDS HERE
