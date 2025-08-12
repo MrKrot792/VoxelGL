@@ -6,7 +6,7 @@
 
 namespace UI
 {
-void initialize(GLFWwindow *win);
+void init(GLFWwindow *win);
 void draw(glm::vec3 cameraPos, glm::vec3 cameraFront, uint FPS, float pitch, float yaw);
 void render();
 void destroy();

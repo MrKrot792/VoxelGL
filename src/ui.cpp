@@ -7,7 +7,7 @@
 #include "glm/vec3.hpp"
 #include <tracy/Tracy.hpp>
 
-void UI::initialize(GLFWwindow *win)
+void UI::init(GLFWwindow *win)
 {
     ZoneScoped;
     // Setup Dear ImGui context
