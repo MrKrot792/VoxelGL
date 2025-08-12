@@ -1,3 +1,4 @@
+#include "camera.hpp"
 #include "chunk.hpp"
 #include "chunk_manager.hpp"
 #include "fps_count.hpp"
@@ -7,6 +8,9 @@
 #include "shader.hpp"
 #include "ui.hpp"
 #include "window.hpp"
+
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -23,7 +27,6 @@
 #include <glm/trigonometric.hpp>
 
 // std
-#include "tracy/Tracy.hpp"
 #include <string>
 
 void processInput(GLFWwindow *window);
@@ -34,10 +37,6 @@ int width = 800;
 int height = 600;
 
 float lastX = 400, lastY = 300;
-
-glm::vec3 cameraPos = glm::vec3(0, 2, 0);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 float yaw = 0, pitch = 0;
 bool firstMouse = true;
@@ -67,7 +66,11 @@ int main(void)
     // Chunk creation
     ChunkManager &chunkManager = ChunkManager::getInstance();
 
-    int size = 8;
+    constexpr int size = 8;
+    constexpr int chunkArea = 8 * 8 * 8;
+    int progress = 0;
+
+    Log::message("Generating chunks...");
 
     for (int i = 0; i < size; i++)
     {
@@ -80,6 +83,9 @@ int main(void)
                 int z = k - size / 2;
 
                 chunkManager.addChunk(Chunk(glm::vec3(x * 16, y * 16, z * 16)));
+                progress++;
+                Log::message("Progress: " + std::to_string(progress) + "/" + std::to_string(chunkArea) + "(" +
+                             std::to_string((float)progress / (float)chunkArea * 100.f) + "%)");
             }
         }
     }
@@ -97,18 +103,21 @@ int main(void)
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    FPSCounter fps;
+    UI::init(Window::window);
+    Input::init();
 
-    UI::initialize(Window::window);
+    TracyGpuContext;
 
     while (!Window::windowShouldClose())
     {
         ZoneScopedC(0xff00ff);
         FrameMarkStart("Main");
-        fps.Start();
+        FPSCounter::Start();
         Window::pollEvents();
 
-        UI::draw(cameraPos, cameraFront, FPS, pitch, yaw);
+        TracyGpuZone("Draw Frame");
+
+        UI::draw(Camera::position, Camera::rotation, FPS, pitch, yaw);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -121,8 +130,7 @@ int main(void)
         glm::vec2 dimensions = Window::getDimensions();
         projection = glm::perspective(glm::radians(90.0f), dimensions.x / dimensions.y, 0.1f, 1000.f);
 
-        glm::mat4 view;
-        view = glm::lookAt(cameraPos, cameraPos + glm::normalize(cameraFront), cameraUp);
+        glm::mat4 view = Camera::getViewMatrix();
 
         // Sending them to GPU
         shader.setMatrix4(std::string("projection"), projection);
@@ -142,16 +150,17 @@ int main(void)
         UI::render();
 
         Window::swapBuffers();
-        fps.End();
-        deltaTime = fps.GetDelta();
+        FPSCounter::End();
+        deltaTime = FPSCounter::GetDelta();
 
-        auto newFps = fps.GetFPS();
+        auto newFps = FPSCounter::GetFPS();
 
         if (newFps != FPS)
             Log::logWithValue(Log::LogLevel::INFO, "FPS", std::to_string(newFps));
 
-        FPS = fps.GetFPS();
+        FPS = FPSCounter::GetFPS();
         FrameMarkEnd("Main");
+        TracyGpuCollect;
     }
 
     UI::destroy();
@@ -250,19 +259,13 @@ void processInput(GLFWwindow *window)
     glm::vec3 cameraRealUp = glm::normalize(glm::cross(cameraFront, cameraRight));
 
     if (Window::getKey(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-    {
         cameraSpeed = 15.f * deltaTime;
-    }
 
     if (Window::getKey(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-    {
         cameraPos -= cameraSpeed * -cameraRealUp;
-    }
 
     if (Window::getKey(GLFW_KEY_SPACE) == GLFW_PRESS)
-    {
         cameraPos -= cameraSpeed * cameraRealUp;
-    }
 
     if (Window::getKey(GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
